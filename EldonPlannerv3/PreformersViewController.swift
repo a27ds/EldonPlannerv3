@@ -10,10 +10,6 @@ import UIKit
 
 class PreformersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
-    
-    
-    
-    
     // Outlets
     @IBOutlet weak var preformersTableView: UITableView!
     
