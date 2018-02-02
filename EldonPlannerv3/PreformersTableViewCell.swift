@@ -10,6 +10,9 @@ import UIKit
 
 class PreformersTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var preformersCellLabel: UILabel!
+    @IBOutlet weak var preformersCellTextField: UITextField!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

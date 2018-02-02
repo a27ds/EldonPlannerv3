@@ -10,24 +10,23 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    // Declare Outlets
+    //Outlets
     @IBOutlet weak var eventTableView: UITableView!
     
-    // Declare Variables
+    //Variables
     let eventInfoNames = ["Date", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew", "How Many Preformers"]
     let eventInfoValues = ["", "", "", "", "", "", ""]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         eventTableView.delegate = self
         eventTableView.dataSource = self
         eventTableView.alwaysBounceVertical = false
         eventTableView.tableFooterView = UIView()
     }
     
-    
+    //Methods --> Tableview
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath) as! EventTableViewCell
         switch indexPath.row {
@@ -61,7 +60,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-//  DatePicker methods
+    //  Methods --> Construting DatePicker
     func datePickerEdit(_ sender: UITextField) {
         let datePicker = datePickerLoad()
         sender.inputView = datePicker
@@ -76,14 +75,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
         textField.text = formatter.string(from: sender.date)
     }
-
+    
     func datePickerLoad() -> UIDatePicker{
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = UIDatePickerMode.date
         return datePicker
     }
     
-//  TimePicker Methods
+    //  Methods --> Construting TimePicker
     func timePickerEdit(_ sender: UITextField) {
         let timePicker = timePickerLoad()
         sender.inputView = timePicker
@@ -103,41 +102,39 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let timePicker = UIDatePicker()
         timePicker.datePickerMode = UIDatePickerMode.time
         timePicker.minuteInterval = 5
-//        datePicker.setDate(dateSet(testDate: timeForTimeWheel!), animated: true)
+        //        datePicker.setDate(dateSet(testDate: timeForTimeWheel!), animated: true)
         return timePicker
     }
     
-//    Numpad Methods
+    //    Methods --> Numpad
     func numPadEdit(_ sender: UITextField) {
         sender.keyboardType = UIKeyboardType.numberPad
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
-
-//    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-//        let cell = tableView.cellForRow(at: indexPath) as! EventTableViewCell
-//        switch indexPath.row {
-//        case 0:             //Date
-//            print("0")
-//        case 1:             //Get-in
-//            print("1")
-//        case 2:             //Dinner
-//            print("2")
-//        case 3:             //Doors
-//            print("3")
-//        case 4:             //Music Curfew
-//            print("4")
-//        case 5:             //Venue Curfew
-//            print("5")
-//        case 6:             //How many preformers
-//            print("6")
-//        default:
-//            print("Default")
-//        }
-//    }
-
-    // Helpers
     
-        // Tableview
+    //    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    //        let cell = tableView.cellForRow(at: indexPath) as! EventTableViewCell
+    //        switch indexPath.row {
+    //        case 0:             //Date
+    //            print("0")
+    //        case 1:             //Get-in
+    //            print("1")
+    //        case 2:             //Dinner
+    //            print("2")
+    //        case 3:             //Doors
+    //            print("3")
+    //        case 4:             //Music Curfew
+    //            print("4")
+    //        case 5:             //Venue Curfew
+    //            print("5")
+    //        case 6:             //How many preformers
+    //            print("6")
+    //        default:
+    //            print("Default")
+    //        }
+    //    }
+    
+    // Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return eventInfoNames.count
     }
@@ -145,10 +142,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell") as! EventTableViewCell
         cell.eventCellLabel.text = eventInfoNames[indexPath.row]
-        cell.eventCellTextField.text = eventInfoValues[indexPath.row]
+        //        cell.eventCellTextField.text = eventInfoValues[indexPath.row]
         cell.eventCellTextField.tag = indexPath.row + 100
         return cell
     }
-
-
+    
+    //Helpers --> Closes InputView
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
 }

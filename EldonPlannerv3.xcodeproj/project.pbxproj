@@ -62,13 +62,13 @@
 		F3790F6F20206DFA008EDDF5 /* EldonPlannerv3 */ = {
 			isa = PBXGroup;
 			children = (
-				F3790F7020206DFA008EDDF5 /* AppDelegate.swift */,
-				F3790F7220206DFA008EDDF5 /* ViewController.swift */,
-				F3992E7E202242FB00EAA57B /* PreformersViewController.swift */,
-				F3790F85202070EF008EDDF5 /* EventTableViewCell.swift */,
 				F3790F7420206DFA008EDDF5 /* Main.storyboard */,
+				F3790F7220206DFA008EDDF5 /* ViewController.swift */,
+				F3790F85202070EF008EDDF5 /* EventTableViewCell.swift */,
+				F3992E7E202242FB00EAA57B /* PreformersViewController.swift */,
 				F3992E80202245FD00EAA57B /* PreformersTableViewCell.swift */,
 				F3790F7A20206DFA008EDDF5 /* Assets.xcassets */,
+				F3790F7020206DFA008EDDF5 /* AppDelegate.swift */,
 				F3790F7C20206DFA008EDDF5 /* LaunchScreen.storyboard */,
 				F3790F7F20206DFA008EDDF5 /* Info.plist */,
 				F3790F7720206DFA008EDDF5 /* EldonPlannerv3.xcdatamodeld */,
