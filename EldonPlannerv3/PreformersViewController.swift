@@ -73,9 +73,19 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
     
+    func soundcheckTimerPickerLoad(_ sender: UITextField) {
+        let soundcheckTimer = UIPickerView()
+        soundcheckTimer.tag = 2
+        soundcheckTimer.delegate = self
+        soundcheckTimer.dataSource = self
+        soundcheckTimer.selectRow(5, inComponent: 0, animated: true) // väljer vart man vill börja i soundcheckTimer
+        sender.inputView = soundcheckTimer
+        sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
+    }
+    
     func lineUpPlacementPickerLoad(_ sender: UITextField) {
         let lineUpPlacementPicker = UIPickerView()
-        lineUpPlacementPicker.tag = 2
+        lineUpPlacementPicker.tag = 3
         lineUpPlacementPicker.delegate = self
         lineUpPlacementPicker.dataSource = self
         sender.inputView = lineUpPlacementPicker
@@ -99,6 +109,25 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
             array.append("\(i * 5) min")
         }
     }
+    //Methods --> Errorchecks
+    func ifAnyInputFieldIsEmpty () {
+        let name = self.view.viewWithTag(200) as! UITextField
+        let soundcheckTime = self.view.viewWithTag(201) as! UITextField
+        let rigUpTime = self.view.viewWithTag(202) as! UITextField
+        let showTime = self.view.viewWithTag(203) as! UITextField
+        let rigDownTime = self.view.viewWithTag(204) as! UITextField
+        let lineUpPlacement = self.view.viewWithTag(205) as! UITextField
+        if (name.text?.isEmpty)! || (soundcheckTime.text?.isEmpty)! || (rigUpTime.text?.isEmpty)! || (showTime.text?.isEmpty)! || (rigDownTime.text?.isEmpty)! || (lineUpPlacement.text?.isEmpty)! {
+            alertIfAnyInputFieldIsEmpty()
+        }
+    }
+    
+    //Methods --> Alerts
+    func alertIfAnyInputFieldIsEmpty () {
+        let alert = UIAlertController(title: "What are you trying to do?", message: "You must fill out all the boxes before continuing.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true)
+    }
     
     //Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -121,6 +150,8 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         if pickerView.tag == 1 {
             return showTimePickerData.count
         } else if pickerView.tag == 2 {
+            return soundcheckTimePickerData.count
+        } else if pickerView.tag == 3 {
             return lineUpPlacementData.count
         }
         return -1
@@ -130,6 +161,8 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         if pickerView.tag == 1 {
             return showTimePickerData[row]
         } else if pickerView.tag == 2 {
+            return soundcheckTimePickerData[row]
+        } else if pickerView.tag == 3 {
             return lineUpPlacementData[row]
         }
         return "Nothing"
@@ -140,6 +173,8 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         if pickerView.tag == 1 {
             textField.text = showTimePickerData[row]
         } else if pickerView.tag == 2 {
+            textField.text = soundcheckTimePickerData[row]
+        } else if pickerView.tag == 3 {
             textField.text = lineUpPlacementData[row]
         }
     }

@@ -49,6 +49,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    //Methods --> Errorchecks
+    func ifAnyInputFieldIsEmpty () {
+        let date = self.view.viewWithTag(100) as! UITextField
+        let getIn = self.view.viewWithTag(101) as! UITextField
+        let dinner = self.view.viewWithTag(102) as! UITextField
+        let doors = self.view.viewWithTag(103) as! UITextField
+        let musicCurfew = self.view.viewWithTag(104) as! UITextField
+        let venueCurfew = self.view.viewWithTag(105) as! UITextField
+        let howManyPreformers = self.view.viewWithTag(106) as! UITextField
+        if (date.text?.isEmpty)! || (getIn.text?.isEmpty)! || (dinner.text?.isEmpty)! || (doors.text?.isEmpty)! || (musicCurfew.text?.isEmpty)! || (venueCurfew.text?.isEmpty)! || (howManyPreformers.text?.isEmpty)! {
+            alertIfAnyInputFieldIsEmpty()
+        }
+    }
+    
     func textFieldEdit (_ sender: UITextField) {
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
         if sender.tag == 100 {
@@ -133,6 +147,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //            print("Default")
     //        }
     //    }
+    
+    //Methods --> Alerts
+    func alertIfAnyInputFieldIsEmpty () {
+        let alert = UIAlertController(title: "What are you trying to do?", message: "You must fill out all the boxes before continuing.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true)
+    }
     
     // Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
