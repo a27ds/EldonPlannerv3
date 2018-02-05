@@ -27,6 +27,14 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var showTime: UITextField? = nil
     var rigDownTime: UITextField? = nil
     var lineUpPlacement: UITextField? = nil
+    var soundcheckEdit: Bool = false
+    var soundcheckTimeSave: Int = 0
+    var rigUpEdit: Bool = false
+    var rigUpTimeSave: Int = 0
+    var showTimeEdit: Bool = false
+    var showTimeSave: Int = 0
+    var rigDownEdit: Bool = false
+    var rigDownTimeSave: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,15 +100,54 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         case 0:             //Preformence Name tag = 200
             textFieldEdit(name!)
         case 1:             //Soundcheck Time tag = 201
+            if soundcheckEdit == true {
+                event?.soundcheckTimeTotalInMin += soundcheckTimeSave
+            }
+            soundcheckEdit = false
             textFieldEdit(soundcheckTime!)
         case 2:             //Rig Up Time tag = 202
+            if rigUpEdit == true {
+                event?.showTimeTotalInMin += rigUpTimeSave
+            }
+            rigUpEdit = false
             textFieldEdit(rigUpTime!)
         case 3:             //Show Time tag = 203
+            if showTimeEdit == true {
+                event?.showTimeTotalInMin += showTimeSave
+            }
+            showTimeEdit = false
             textFieldEdit(showTime!)
         case 4:             //Rig Down Time tag = 204
+            if rigDownEdit == true {
+                event?.showTimeTotalInMin += rigDownTimeSave
+            }
+            rigDownEdit = false
             textFieldEdit(rigDownTime!)
         case 5:             //Line Up Placement tag = 205
             textFieldEdit(lineUpPlacement!)
+        default:
+            print("Default")
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 1:             //Soundcheck Time tag = 201
+            soundcheckEdit = true
+            soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
+            event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(sender: (soundcheckTime!), timeTotalMin: (event?.soundcheckTimeTotalInMin)!)
+        case 2:             //Rig Up Time tag = 202
+            rigUpEdit = true
+            rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+        case 3:             //Show Time tag = 203
+            showTimeEdit = true
+            showTimeSave = Int((rigUpTime!.text!).dropLast(4))!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+        case 4:             //Rig Down Time tag = 204
+            rigDownEdit = true
+            rigDownTimeSave = Int((rigUpTime!.text!).dropLast(4))!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
         default:
             print("Default")
         }
