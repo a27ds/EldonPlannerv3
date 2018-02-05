@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F32DF1BF20289D40007EB849 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32DF1BE20289D40007EB849 /* EventViewController.swift */; };
 		F3790F7120206DFA008EDDF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3790F7020206DFA008EDDF5 /* AppDelegate.swift */; };
 		F3790F7620206DFA008EDDF5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F3790F7420206DFA008EDDF5 /* Main.storyboard */; };
 		F3790F7920206DFA008EDDF5 /* EldonPlannerv3.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F3790F7720206DFA008EDDF5 /* EldonPlannerv3.xcdatamodeld */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F32DF1BE20289D40007EB849 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		F3790F6D20206DFA008EDDF5 /* EldonPlannerv3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EldonPlannerv3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3790F7020206DFA008EDDF5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F3790F7220206DFA008EDDF5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				F3790F7420206DFA008EDDF5 /* Main.storyboard */,
 				F3790F7220206DFA008EDDF5 /* ViewController.swift */,
 				F3992E7E202242FB00EAA57B /* PreformersViewController.swift */,
+				F32DF1BE20289D40007EB849 /* EventViewController.swift */,
 				F3790F85202070EF008EDDF5 /* EventTableViewCell.swift */,
 				F3992E80202245FD00EAA57B /* PreformersTableViewCell.swift */,
 				F3C7D82B202841DC00CCD4F3 /* Event.swift */,
@@ -159,6 +162,7 @@
 				F3C7D82E2028422E00CCD4F3 /* Preformence.swift in Sources */,
 				F3992E81202245FD00EAA57B /* PreformersTableViewCell.swift in Sources */,
 				F3790F7920206DFA008EDDF5 /* EldonPlannerv3.xcdatamodeld in Sources */,
+				F32DF1BF20289D40007EB849 /* EventViewController.swift in Sources */,
 				F3C7D82C202841DC00CCD4F3 /* Event.swift in Sources */,
 				F3C7D82F20284A9000CCD4F3 /* ViewController.swift in Sources */,
 				F3790F7120206DFA008EDDF5 /* AppDelegate.swift in Sources */,

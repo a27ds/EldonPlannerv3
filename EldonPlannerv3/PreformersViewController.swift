@@ -10,15 +10,17 @@ import UIKit
 
 class PreformersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
-    // Outlets
+    //  Outlets
     @IBOutlet weak var preformersTableView: UITableView!
+    @IBOutlet weak var addAndDone: UIBarButtonItem!
     
-    //Variables
+    //  Variables
+    var event: Event? = nil
     let preformersInfoNames = ["Preformence Name", "Soundcheck Time", "Rig Up Time", "Show Time", "Rig Down Time", "Line Up Placement"]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
     var showTimePickerData: [String] = []
     var soundcheckTimePickerData: [String] = []
-    var lineUpPlacementData: [String] = ["1","2","3"]
+    var lineUpPlacementData: [String] = []
     var name: UITextField? = nil
     var soundcheckTime: UITextField? = nil
     var rigUpTime: UITextField? = nil
@@ -32,13 +34,60 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         preformersTableView.dataSource = self
         preformersTableView.alwaysBounceVertical = false
         preformersTableView.tableFooterView = UIView()
+        appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
     }
     
-    //Methods --> Tableview
+    //  IBActions
+    @IBAction func addAndDoneButtonPressed(_ sender: UIBarButtonItem) {
+        if !ifAnyInputFieldIsEmpty() {
+            alertIfAnyInputFieldIsEmpty()
+        } else {
+            if lineUpPlacementData.count == 2 {
+                //Ändra ikonen till Done via System item.. kolla med david hur man gör det!
+            }
+            if lineUpPlacementData.count == 1 {
+                self.performSegue(withIdentifier: "toEventInfo", sender: sender)
+            }
+            addPreformersInfoToPreformenceArray()
+            removeSelectedLineUpPlacementFromArray()
+            resetTextFields()
+        }
+    }
+    //  Segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toEventInfo" {
+            let destVC = segue.destination as! EventViewController
+            addPreformersInfoToPreformenceArray()
+            destVC.event = event
+        }
+    }
+    
+    func addPreformersInfoToPreformenceArray() {
+        event?.preformers.append(Preformence(preformenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPreformers: (event?.howManyPreformers)!))
+    }
+    
+    func removeMinFromTotalTime(sender: UITextField, timeTotalMin: Int) -> Int{
+        return timeTotalMin - Int((sender.text!).dropLast(4))!
+    }
+    
+    func removeSelectedLineUpPlacementFromArray() {
+        if let index = lineUpPlacementData.index(of: (lineUpPlacement?.text!)!) {
+            lineUpPlacementData.remove(at: index)
+        }
+    }
+    
+    // Methods --> Append Line up data
+    func appendLineUpPlacementData() {
+        for i in 1...event!.howManyPreformers {
+            lineUpPlacementData.append("\(i)")
+        }
+    }
+    
+    //  Methods --> Tableview
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let cell = tableView.cellForRow(at: indexPath) as! PreformersTableViewCell
+        setTagToName()
         switch indexPath.row {
         case 0:             //Preformence Name tag = 200
             textFieldEdit(name!)
@@ -70,7 +119,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    //Methods --> Construting Pickers
+    //  Methods --> Construting Pickers
     func countDownTimerPickerLoad(_ sender: UITextField) {
         let countDownTimer = UIPickerView()
         countDownTimer.tag = 1
@@ -100,14 +149,14 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
     
-    //Methods --> Building Up Time array
+    //  Methods --> Building Up Time array
     func showTimeEveryFiveMinInTotal() {
-        let everyFiveMinInTotalShowTime = (200) / 5 //FIXA SEN NÄR COREDATA ÄR PÅ PLATS
+        let everyFiveMinInTotalShowTime = (event?.showTimeTotalInMin)! / 5
         appendTimeInPickerData(runs: everyFiveMinInTotalShowTime, array: &showTimePickerData)
     }
     
     func soundcheckTimeEveryFiveMinInTotal() {
-        let everyFiveMinInTotalSoundcheckTime = (100) / 5 //FIXA SEN NÄR COREDATA ÄR PÅ PLATS
+        let everyFiveMinInTotalSoundcheckTime = (event?.soundcheckTimeTotalInMin)! / 5
         appendTimeInPickerData(runs: everyFiveMinInTotalSoundcheckTime, array: &soundcheckTimePickerData)
     }
     
@@ -117,39 +166,54 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
             array.append("\(i * 5) min")
         }
     }
-    //Methods --> Errorchecks
-    func ifAnyInputFieldIsEmpty () {
-        if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
-            alertIfAnyInputFieldIsEmpty()
-        }
+    
+    //  Methods --> Reset all UITextFields
+    func resetTextFields() {
+        name?.text = nil
+        soundcheckTime?.text = nil
+        rigUpTime?.text = nil
+        showTime?.text = nil
+        rigDownTime?.text = nil
+        lineUpPlacement?.text = nil
     }
     
-    //Methods --> Alerts
+    //  Methods --> Errorchecks
+    func ifAnyInputFieldIsEmpty () -> Bool {
+        if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
+            return false
+        }
+        return true
+    }
+    
+    //  Methods --> Alerts
     func alertIfAnyInputFieldIsEmpty () {
         let alert = UIAlertController(title: "What are you trying to do?", message: "You must fill out all the boxes before continuing.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true)
     }
     
-    //Helpers --> Tableview
+    //  Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return preformersInfoNames.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "preformersCell") as! PreformersTableViewCell
-        cell.preformersCellLabel.text = preformersInfoNames[indexPath.row]
-        cell.preformersCellTextField.tag = indexPath.row + 200
+    func setTagToName() {
         name = self.view.viewWithTag(200) as? UITextField
         soundcheckTime = self.view.viewWithTag(201) as? UITextField
         rigUpTime = self.view.viewWithTag(202) as? UITextField
         showTime = self.view.viewWithTag(203) as? UITextField
         rigDownTime = self.view.viewWithTag(204) as? UITextField
         lineUpPlacement = self.view.viewWithTag(205) as? UITextField
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "preformersCell") as! PreformersTableViewCell
+        cell.preformersCellLabel.text = preformersInfoNames[indexPath.row]
+        cell.preformersCellTextField.tag = indexPath.row + 200
         return cell
     }
     
-    //Helpers --> PickerView
+    //  Helpers --> PickerView
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -187,7 +251,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    //Helpers --> Closes InputView
+    //  Helpers --> Closes InputView
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
