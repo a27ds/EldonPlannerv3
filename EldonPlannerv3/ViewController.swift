@@ -15,8 +15,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Variables
     let eventInfoNames = ["Date", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew", "How Many Preformers"]
-    let eventInfoValues = ["", "", "", "", "", "", ""]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
+    var event: Event? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,7 +163,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell") as! EventTableViewCell
         cell.eventCellLabel.text = eventInfoNames[indexPath.row]
-        //        cell.eventCellTextField.text = eventInfoValues[indexPath.row]
         cell.eventCellTextField.tag = indexPath.row + 100
         return cell
     }

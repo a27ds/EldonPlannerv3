@@ -19,6 +19,12 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var showTimePickerData: [String] = []
     var soundcheckTimePickerData: [String] = []
     var lineUpPlacementData: [String] = ["1","2","3"]
+    var name: UITextField? = nil
+    var soundcheckTime: UITextField? = nil
+    var rigUpTime: UITextField? = nil
+    var showTime: UITextField? = nil
+    var rigDownTime: UITextField? = nil
+    var lineUpPlacement: UITextField? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,20 +38,20 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //Methods --> Tableview
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! PreformersTableViewCell
+//        let cell = tableView.cellForRow(at: indexPath) as! PreformersTableViewCell
         switch indexPath.row {
         case 0:             //Preformence Name tag = 200
-            textFieldEdit(cell.preformersCellTextField)
+            textFieldEdit(name!)
         case 1:             //Soundcheck Time tag = 201
-            textFieldEdit(cell.preformersCellTextField)
+            textFieldEdit(soundcheckTime!)
         case 2:             //Rig Up Time tag = 202
-            textFieldEdit(cell.preformersCellTextField)
+            textFieldEdit(rigUpTime!)
         case 3:             //Show Time tag = 203
-            textFieldEdit(cell.preformersCellTextField)
+            textFieldEdit(showTime!)
         case 4:             //Rig Down Time tag = 204
-            textFieldEdit(cell.preformersCellTextField)
+            textFieldEdit(rigDownTime!)
         case 5:             //Line Up Placement tag = 205
-            textFieldEdit(cell.preformersCellTextField)
+            textFieldEdit(lineUpPlacement!)
         default:
             print("Default")
         }
@@ -55,7 +61,9 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
         if sender.tag == 200 {
             sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
-        } else if sender.tag >= 201 && sender.tag <= 204{
+        } else if sender.tag == 201 {
+            soundcheckTimerPickerLoad(sender)
+        } else if sender.tag >= 202 && sender.tag <= 204{
             countDownTimerPickerLoad(sender)
         } else if sender.tag == 205 {
             lineUpPlacementPickerLoad(sender)
@@ -111,13 +119,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     //Methods --> Errorchecks
     func ifAnyInputFieldIsEmpty () {
-        let name = self.view.viewWithTag(200) as! UITextField
-        let soundcheckTime = self.view.viewWithTag(201) as! UITextField
-        let rigUpTime = self.view.viewWithTag(202) as! UITextField
-        let showTime = self.view.viewWithTag(203) as! UITextField
-        let rigDownTime = self.view.viewWithTag(204) as! UITextField
-        let lineUpPlacement = self.view.viewWithTag(205) as! UITextField
-        if (name.text?.isEmpty)! || (soundcheckTime.text?.isEmpty)! || (rigUpTime.text?.isEmpty)! || (showTime.text?.isEmpty)! || (rigDownTime.text?.isEmpty)! || (lineUpPlacement.text?.isEmpty)! {
+        if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
             alertIfAnyInputFieldIsEmpty()
         }
     }
@@ -138,6 +140,12 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         let cell = tableView.dequeueReusableCell(withIdentifier: "preformersCell") as! PreformersTableViewCell
         cell.preformersCellLabel.text = preformersInfoNames[indexPath.row]
         cell.preformersCellTextField.tag = indexPath.row + 200
+        name = self.view.viewWithTag(200) as? UITextField
+        soundcheckTime = self.view.viewWithTag(201) as? UITextField
+        rigUpTime = self.view.viewWithTag(202) as? UITextField
+        showTime = self.view.viewWithTag(203) as? UITextField
+        rigDownTime = self.view.viewWithTag(204) as? UITextField
+        lineUpPlacement = self.view.viewWithTag(205) as? UITextField
         return cell
     }
     
