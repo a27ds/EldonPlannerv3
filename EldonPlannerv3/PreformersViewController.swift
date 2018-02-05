@@ -133,21 +133,33 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 1:             //Soundcheck Time tag = 201
-            soundcheckEdit = true
-            soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
-            event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(sender: (soundcheckTime!), timeTotalMin: (event?.soundcheckTimeTotalInMin)!)
+            guard (soundcheckTime?.text?.isEmpty)! else {
+                soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
+                event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(sender: (soundcheckTime!), timeTotalMin: (event?.soundcheckTimeTotalInMin)!)
+                soundcheckEdit = true
+                return
+            }
         case 2:             //Rig Up Time tag = 202
-            rigUpEdit = true
-            rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+            guard (rigUpTime!.text?.isEmpty)! else {
+                rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
+                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+                rigUpEdit = true
+                return
+            }
         case 3:             //Show Time tag = 203
-            showTimeEdit = true
-            showTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+            guard (showTime!.text?.isEmpty)! else {
+                showTimeSave = Int((showTime!.text!).dropLast(4))!
+                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+                showTimeEdit = true
+                return
+            }
         case 4:             //Rig Down Time tag = 204
-            rigDownEdit = true
-            rigDownTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+            guard (rigDownTime!.text?.isEmpty)! else {
+                rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
+                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+                rigDownEdit = true
+                return
+            }
         default:
             print("Default")
         }
@@ -218,6 +230,14 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Reset all UITextFields
     func resetTextFields() {
+        soundcheckEdit = false
+        soundcheckTimeSave = 0
+        rigUpEdit = false
+        rigUpTimeSave = 0
+        showTimeEdit = false
+        showTimeSave = 0
+        rigDownEdit = false
+        rigDownTimeSave = 0
         name?.text = nil
         soundcheckTime?.text = nil
         rigUpTime?.text = nil
