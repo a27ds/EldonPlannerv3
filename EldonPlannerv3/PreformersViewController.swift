@@ -158,8 +158,10 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         if sender.tag == 200 {
             sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
         } else if sender.tag == 201 {
+            soundcheckTimeEveryFiveMinInTotal()
             soundcheckTimerPickerLoad(sender)
         } else if sender.tag >= 202 && sender.tag <= 204{
+            showTimeEveryFiveMinInTotal()
             countDownTimerPickerLoad(sender)
         } else if sender.tag == 205 {
             lineUpPlacementPickerLoad(sender)
