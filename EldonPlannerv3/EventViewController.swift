@@ -86,7 +86,7 @@ class EventViewController: UIViewController {
         }
         return showInfo
     }
-    
+//    Testar branshing
     //  Methods --> Time conversion
     func fromGetInToDinner(preformerTimeInMin: Int, from: String) -> String {
         let formatter = DateFormatter()
