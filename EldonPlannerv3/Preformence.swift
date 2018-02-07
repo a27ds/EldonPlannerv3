@@ -15,6 +15,7 @@ class Preformence {
     var showTime: String
     var rigDownTime: String
     var lineUpPlacement: String
+    var timeForShow: String
     var preformerTotalTimeInMin: Int
     var soundcheckTimeInt: Int
     var rigUpTimeInt: Int
@@ -30,6 +31,7 @@ class Preformence {
         self.showTime = showTime
         self.rigDownTime = rigDownTime
         self.lineUpPlacement = lineUpPlacement
+        self.timeForShow = "22:22"
         self.preformerTotalTimeInMin = 0
         self.soundcheckTimeInt = Int(soundcheckTime.dropLast(4))!
         self.rigUpTimeInt = Int(rigUpTime.dropLast(4))!
@@ -42,10 +44,13 @@ class Preformence {
     func totalShowTimeInMinForPreformers() {
         if lineUpPlacementInt == 1 { //First preformer
             preformerTotalTimeInMin = showTimeInt + rigDownTimeInt
+            print(preformerTotalTimeInMin)
         } else if lineUpPlacementInt == howManyPreformers { // Last preformer
             preformerTotalTimeInMin = rigUpTimeInt + showTimeInt
+            print(preformerTotalTimeInMin)
         } else { //in the middle preformers
             preformerTotalTimeInMin = rigUpTimeInt + showTimeInt + rigDownTimeInt
+            print(preformerTotalTimeInMin)
         }
     }
 }

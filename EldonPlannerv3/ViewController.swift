@@ -11,13 +11,17 @@ import UIKit
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     //  Outlets
+    @IBOutlet weak var eventNavBar: UINavigationItem!
     @IBOutlet weak var eventTableView: UITableView!
-    @IBOutlet weak var nextButton: UIBarButtonItem!
+    @IBOutlet var tap: UITapGestureRecognizer!
     
     //  Variables
-    let eventInfoNames = ["Date", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew", "How Many Preformers"]
+    let eventInfoNames = ["Date", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew", "How Many Performers"]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
+    var timeForTimeWheel: String?
+    
     var event: Event? = nil
+    
     var date: UITextField? = nil
     var getIn: UITextField? = nil
     var dinner: UITextField? = nil
@@ -25,19 +29,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var musicCurfew: UITextField? = nil
     var venueCurfew: UITextField? = nil
     var howManyPreformers: UITextField? = nil
-    var timeForTimeWheel: String?
     
+    var cellIndexPath: IndexPath? = nil
     
+    //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        nextButton.title = ""
         eventTableView.delegate = self
         eventTableView.dataSource = self
         eventTableView.alwaysBounceVertical = false
         eventTableView.tableFooterView = UIView()
+        eventTableView.rowHeight = 44.0
+        eventTableView.backgroundView = UIView()
+        eventTableView.backgroundView?.addGestureRecognizer(tap)
+        initInputViewsForUITextFields()
     }
     
     //  IBActions
+    @IBAction func tapAction(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
+        eventTableView.deselectRow(at: cellIndexPath!, animated: true)
+    }
+    
     @IBAction func nextButtonPressed(_ sender: UIBarButtonItem) {
         if !anyInputFieldIsEmpty() {
             alertIfAnyInputFieldIsEmpty()
@@ -54,9 +67,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    
     //  Methods --> Tableview
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        cellIndexPath = indexPath
         setTagToName()
         switch indexPath.row {
         case 0:             //Date tag = 100
@@ -83,40 +96,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-//    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-//        switch indexPath.row {
-//        case 0:             //Date
-//            self.hideKeyboard()
-//        case 1:             //Get-in
-//            self.hideKeyboard()
-//        case 2:             //Dinner
-//            self.hideKeyboard()
-//        case 3:             //Doors
-//            self.hideKeyboard()
-//        case 4:             //Music Curfew
-//            self.hideKeyboard()
-//        case 5:             //Venue Curfew
-//            self.hideKeyboard()
-//        case 6:             //How many preformers
-//            self.hideKeyboard()
-//        default:
-//            print("Default")
-//        }
-//    }
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        eventTableView.deselectRow(at: indexPath, animated: true)
+    }
     
-    //  Methods --> Errorchecks
-    func anyInputFieldIsEmpty () -> Bool {
-        if (date?.text?.isEmpty)! || (getIn?.text?.isEmpty)! || (dinner?.text?.isEmpty)! || (doors?.text?.isEmpty)! || (musicCurfew?.text?.isEmpty)! || (venueCurfew?.text?.isEmpty)! || (howManyPreformers?.text?.isEmpty)! {
-            return false
+    //  Methods --> Going thru all cells and make the inputview active
+    func initInputViewsForUITextFields() {
+        let visiblesCells = eventTableView.visibleCells
+        for cell in visiblesCells {
+            let path = eventTableView.indexPath(for: cell)
+            tableView(eventTableView, didSelectRowAt: path!)
         }
-        return true
     }
     
     //  Methods --> Button becomes visable
     func shouldNextButtonDisplay (anyInputFieldIsEmpty: Bool) {
         if anyInputFieldIsEmpty {
-            nextButton.title = "Next"
+        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
+        eventNavBar.rightBarButtonItem = doneButtonItem
         }
+    }
+    
+    @objc func doneButtonFunc() {
+        self.performSegue(withIdentifier: "toAddPreformers", sender: nil)
     }
     
     //  Methods --> Textfield became active
@@ -124,13 +126,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
         if sender.tag == 100 {
             datePickerEdit(sender)
-            shouldNextButtonDisplay(anyInputFieldIsEmpty: anyInputFieldIsEmpty())
         } else if sender.tag >= 101 && sender.tag <= 105{
             timePickerEdit(sender)
-            shouldNextButtonDisplay(anyInputFieldIsEmpty: anyInputFieldIsEmpty())
         } else if sender.tag == 106 {
             numPadEdit(sender)
-            shouldNextButtonDisplay(anyInputFieldIsEmpty: anyInputFieldIsEmpty())
         }
     }
     
@@ -215,6 +214,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.present(alert, animated: true)
     }
     
+    //  Methods --> Errorchecks
+    func anyInputFieldIsEmpty () -> Bool {
+        if (date?.text?.isEmpty)! || (getIn?.text?.isEmpty)! || (dinner?.text?.isEmpty)! || (doors?.text?.isEmpty)! || (musicCurfew?.text?.isEmpty)! || (venueCurfew?.text?.isEmpty)! || (howManyPreformers?.text?.isEmpty)! {
+            return false
+        }
+        return true
+    }
+    
     //  Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return eventInfoNames.count
@@ -228,9 +235,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
-    //  Helpers --> Closes InputView
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
+    //Helpers --> Checks if any UITextfield did end it's editing, and then Display a done button in navbar
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: date)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: getIn)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: dinner)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: doors)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: musicCurfew)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: venueCurfew)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: howManyPreformers)
+    }
+    
+    @objc func textFieldEndEdit() {
+        shouldNextButtonDisplay(anyInputFieldIsEmpty: anyInputFieldIsEmpty())
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 

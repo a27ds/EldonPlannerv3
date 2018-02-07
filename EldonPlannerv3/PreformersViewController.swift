@@ -11,22 +11,27 @@ import UIKit
 class PreformersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
     //  Outlets
+    @IBOutlet weak var preformersNavBar: UINavigationItem!
     @IBOutlet weak var preformersTableView: UITableView!
-    @IBOutlet weak var addAndDone: UIBarButtonItem!
+    @IBOutlet var tap: UITapGestureRecognizer!
     
     //  Variables
     var event: Event? = nil
+    
     let preformersInfoNames = ["Preformence Name", "Soundcheck Time", "Rig Up Time", "Show Time", "Rig Down Time", "Line Up Placement"]
-    var whichTextFieldIsSelectedByItsTagNumber: Int = 0
     var showTimePickerData: [String] = []
     var soundcheckTimePickerData: [String] = []
     var lineUpPlacementData: [String] = []
+    
+    var whichTextFieldIsSelectedByItsTagNumber: Int = 0
+    
     var name: UITextField? = nil
     var soundcheckTime: UITextField? = nil
     var rigUpTime: UITextField? = nil
     var showTime: UITextField? = nil
     var rigDownTime: UITextField? = nil
     var lineUpPlacement: UITextField? = nil
+    
     var soundcheckEdit: Bool = false
     var soundcheckTimeSave: Int = 0
     var rigUpEdit: Bool = false
@@ -36,33 +41,32 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var rigDownEdit: Bool = false
     var rigDownTimeSave: Int = 0
     
+    var cellIndexPath: IndexPath? = nil
+    
+    //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        //        testRun()
         preformersTableView.delegate = self
         preformersTableView.dataSource = self
         preformersTableView.alwaysBounceVertical = false
         preformersTableView.tableFooterView = UIView()
+        preformersTableView.rowHeight = 44.0
+        preformersTableView.backgroundView = UIView()
+        preformersTableView.backgroundView?.addGestureRecognizer(tap)
         appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
+        initInputViewsForUITextFields()
+        
     }
     
     //  IBActions
-    @IBAction func addAndDoneButtonPressed(_ sender: UIBarButtonItem) {
-        if !ifAnyInputFieldIsEmpty() {
-            alertIfAnyInputFieldIsEmpty()
-        } else {
-            if lineUpPlacementData.count == 2 {
-                //Ändra ikonen till Done via System item.. kolla med david hur man gör det!
-            }
-            if lineUpPlacementData.count == 1 {
-                self.performSegue(withIdentifier: "toEventInfo", sender: sender)
-            }
-            addPreformersInfoToPreformenceArray()
-            removeSelectedLineUpPlacementFromArray()
-            resetTextFields()
-        }
+    @IBAction func tapPressed(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
+        preformersTableView.deselectRow(at: cellIndexPath!, animated: true)
     }
+    
     //  Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toEventInfo" {
@@ -86,6 +90,15 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    //Methods --> Going thru all cells and make the inputview active
+    func initInputViewsForUITextFields() {
+        let visiblesCells = preformersTableView.visibleCells
+        for cell in visiblesCells {
+            let path = preformersTableView.indexPath(for: cell)
+            tableView(preformersTableView, didSelectRowAt: path!)
+        }
+    }
+    
     // Methods --> Append Line up data
     func appendLineUpPlacementData() {
         for i in 1...event!.howManyPreformers {
@@ -95,6 +108,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Tableview
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        cellIndexPath = indexPath
         setTagToName()
         switch indexPath.row {
         case 0:             //Preformence Name tag = 200
@@ -238,12 +252,48 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         showTimeSave = 0
         rigDownEdit = false
         rigDownTimeSave = 0
+        
         name?.text = nil
         soundcheckTime?.text = nil
         rigUpTime?.text = nil
         showTime?.text = nil
         rigDownTime?.text = nil
         lineUpPlacement?.text = nil
+    }
+    
+    //  Methods --> Nav Buttons becomes visble
+    func shouldAddButtonDisplay (anyInputFieldIsEmpty: Bool) {
+        if anyInputFieldIsEmpty {
+            makeAddButton()
+        }
+    }
+    
+    func shouldDoneButtonDisplay (anyInputFieldIsEmpty: Bool) {
+        if anyInputFieldIsEmpty {
+            makeDoneButton()
+        }
+    }
+    
+    // Methods --> Making Nav buttons with functions connected to them
+    func makeAddButton() {
+        let editButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addButtonFunc))
+        preformersNavBar.rightBarButtonItem = editButtonItem
+    }
+    
+    @objc func addButtonFunc() {
+        addPreformersInfoToPreformenceArray()
+        removeSelectedLineUpPlacementFromArray()
+        resetTextFields()
+        preformersNavBar.rightBarButtonItem = nil
+    }
+    
+    func makeDoneButton() {
+        let editButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
+        preformersNavBar.rightBarButtonItem = editButtonItem
+    }
+    
+    @objc func doneButtonFunc() {
+        self.performSegue(withIdentifier: "toEventInfo", sender: nil)
     }
     
     //  Methods --> Errorchecks
@@ -320,8 +370,31 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    //  Helpers --> Closes InputView
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
+    //Helpers --> Checks if any UITextfield did end it's editing, and then runs shouldNextButtonDisplay
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: name)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: soundcheckTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigUpTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
     }
+    
+    @objc func textFieldEndEdit() {
+        if lineUpPlacementData.count == 1 {
+            shouldDoneButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
+        } else {
+            shouldAddButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+//    //  Tester
+//    func testRun() {
+//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPreformers: 3)
+//        
+//    }
 }
