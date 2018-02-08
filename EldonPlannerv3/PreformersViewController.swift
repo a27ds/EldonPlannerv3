@@ -18,7 +18,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     //  Variables
     var event: Event? = nil
     
-    let preformersInfoNames = ["Preformence Name", "Soundcheck Time", "Rig Up Time", "Show Time", "Rig Down Time", "Line Up Placement"]
+    let preformersInfoNames = ["Preformence Name", "Soundcheck Time", "Change Over", "Show Time", "Line Up Placement"]
     var showTimePickerData: [String] = []
     var soundcheckTimePickerData: [String] = []
     var lineUpPlacementData: [String] = []
@@ -27,19 +27,16 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var name: UITextField? = nil
     var soundcheckTime: UITextField? = nil
-    var rigUpTime: UITextField? = nil
+    var changeOverTime: UITextField? = nil
     var showTime: UITextField? = nil
-    var rigDownTime: UITextField? = nil
     var lineUpPlacement: UITextField? = nil
     
     var soundcheckEdit: Bool = false
     var soundcheckTimeSave: Int = 0
-    var rigUpEdit: Bool = false
-    var rigUpTimeSave: Int = 0
+    var changeOverEdit: Bool = false
+    var changeOverTimeSave: Int = 0
     var showTimeEdit: Bool = false
     var showTimeSave: Int = 0
-    var rigDownEdit: Bool = false
-    var rigDownTimeSave: Int = 0
     
     var cellIndexPath: IndexPath? = nil
     
@@ -77,7 +74,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func addPreformersInfoToPreformenceArray() {
-        event?.preformers.append(Preformence(preformenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPreformers: (event?.howManyPreformers)!))
+        event?.preformers.append(Preformence(preformenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, changeOverTime: (changeOverTime?.text!)!, showTime: (showTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPreformers: (event?.howManyPreformers)!))
     }
     
     func removeMinFromTotalTime(sender: UITextField, timeTotalMin: Int) -> Int{
@@ -120,24 +117,18 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
             soundcheckEdit = false
             textFieldEdit(soundcheckTime!)
         case 2:             //Rig Up Time tag = 202
-            if rigUpEdit == true {
-                event?.showTimeTotalInMin += rigUpTimeSave
+            if changeOverEdit == true {
+                event?.showTimeTotalInMin += changeOverTimeSave
             }
-            rigUpEdit = false
-            textFieldEdit(rigUpTime!)
+            changeOverEdit = false
+            textFieldEdit(changeOverTime!)
         case 3:             //Show Time tag = 203
             if showTimeEdit == true {
                 event?.showTimeTotalInMin += showTimeSave
             }
             showTimeEdit = false
             textFieldEdit(showTime!)
-        case 4:             //Rig Down Time tag = 204
-            if rigDownEdit == true {
-                event?.showTimeTotalInMin += rigDownTimeSave
-            }
-            rigDownEdit = false
-            textFieldEdit(rigDownTime!)
-        case 5:             //Line Up Placement tag = 205
+        case 4:             //Line Up Placement tag = 204
             textFieldEdit(lineUpPlacement!)
         default:
             print("Default")
@@ -153,11 +144,11 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
                 soundcheckEdit = true
                 return
             }
-        case 2:             //Rig Up Time tag = 202
-            guard (rigUpTime!.text?.isEmpty)! else {
-                rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
-                rigUpEdit = true
+        case 2:             //Change over Time tag = 202
+            guard (changeOverTime!.text?.isEmpty)! else {
+                changeOverTimeSave = Int((changeOverTime!.text!).dropLast(4))!
+                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (changeOverTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+                changeOverEdit = true
                 return
             }
         case 3:             //Show Time tag = 203
@@ -165,13 +156,6 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
                 showTimeSave = Int((showTime!.text!).dropLast(4))!
                 event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
                 showTimeEdit = true
-                return
-            }
-        case 4:             //Rig Down Time tag = 204
-            guard (rigDownTime!.text?.isEmpty)! else {
-                rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
-                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
-                rigDownEdit = true
                 return
             }
         default:
@@ -246,18 +230,15 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     func resetTextFields() {
         soundcheckEdit = false
         soundcheckTimeSave = 0
-        rigUpEdit = false
-        rigUpTimeSave = 0
+        changeOverEdit = false
+        changeOverTimeSave = 0
         showTimeEdit = false
         showTimeSave = 0
-        rigDownEdit = false
-        rigDownTimeSave = 0
         
         name?.text = nil
         soundcheckTime?.text = nil
-        rigUpTime?.text = nil
+        changeOverTime?.text = nil
         showTime?.text = nil
-        rigDownTime?.text = nil
         lineUpPlacement?.text = nil
     }
     
@@ -298,7 +279,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Errorchecks
     func ifAnyInputFieldIsEmpty () -> Bool {
-        if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
+        if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (changeOverTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
             return false
         }
         return true
@@ -319,10 +300,9 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     func setTagToName() {
         name = self.view.viewWithTag(200) as? UITextField
         soundcheckTime = self.view.viewWithTag(201) as? UITextField
-        rigUpTime = self.view.viewWithTag(202) as? UITextField
+        changeOverTime = self.view.viewWithTag(202) as? UITextField
         showTime = self.view.viewWithTag(203) as? UITextField
-        rigDownTime = self.view.viewWithTag(204) as? UITextField
-        lineUpPlacement = self.view.viewWithTag(205) as? UITextField
+        lineUpPlacement = self.view.viewWithTag(204) as? UITextField
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -374,9 +354,8 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: name)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: soundcheckTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigUpTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: changeOverTime)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
     }
     

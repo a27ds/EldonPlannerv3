@@ -11,46 +11,35 @@ import Foundation
 class Preformence {
     var preformenceName: String
     var soundcheckTime: String
-    var rigUpTime: String
+    var changeOverTime: String
     var showTime: String
-    var rigDownTime: String
     var lineUpPlacement: String
     var timeForShow: String
     var preformerTotalTimeInMin: Int
     var soundcheckTimeInt: Int
-    var rigUpTimeInt: Int
+    var changeOverInt: Int
     var showTimeInt: Int
-    var rigDownTimeInt: Int
     var lineUpPlacementInt: Int
     var howManyPreformers: Int
     
-    init(preformenceName: String, soundcheckTime: String, rigUpTime: String, showTime: String, rigDownTime: String, lineUpPlacement: String, howManyPreformers: Int) {
+    init(preformenceName: String, soundcheckTime: String, changeOverTime: String, showTime: String, lineUpPlacement: String, howManyPreformers: Int) {
         self.preformenceName = preformenceName
         self.soundcheckTime = soundcheckTime
-        self.rigUpTime = rigUpTime
+        self.changeOverTime = changeOverTime
         self.showTime = showTime
-        self.rigDownTime = rigDownTime
         self.lineUpPlacement = lineUpPlacement
         self.timeForShow = "22:22"
         self.preformerTotalTimeInMin = 0
         self.soundcheckTimeInt = Int(soundcheckTime.dropLast(4))!
-        self.rigUpTimeInt = Int(rigUpTime.dropLast(4))!
+        self.changeOverInt = Int(changeOverTime.dropLast(4))!
         self.showTimeInt = Int(showTime.dropLast(4))!
-        self.rigDownTimeInt = Int(rigDownTime.dropLast(4))!
         self.lineUpPlacementInt = Int(lineUpPlacement)!
         self.howManyPreformers = howManyPreformers
         totalShowTimeInMinForPreformers()
     }
+    
     func totalShowTimeInMinForPreformers() {
-        if lineUpPlacementInt == 1 { //First preformer
-            preformerTotalTimeInMin = showTimeInt + rigDownTimeInt
+            preformerTotalTimeInMin = showTimeInt + changeOverInt
             print(preformerTotalTimeInMin)
-        } else if lineUpPlacementInt == howManyPreformers { // Last preformer
-            preformerTotalTimeInMin = rigUpTimeInt + showTimeInt
-            print(preformerTotalTimeInMin)
-        } else { //in the middle preformers
-            preformerTotalTimeInMin = rigUpTimeInt + showTimeInt + rigDownTimeInt
-            print(preformerTotalTimeInMin)
-        }
     }
 }

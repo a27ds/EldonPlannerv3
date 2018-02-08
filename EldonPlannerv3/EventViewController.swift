@@ -99,7 +99,7 @@ class EventViewController: UIViewController {
         return getInCopy
     }
     
-    func fromMusicCurfewToDoors(preformerTimeInMin: Int, curfew: String) -> String {
+    func fromMusicCurfewToDoors(preformerTimeInMin: Int, changeOver: Int, curfew: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         let tuplet = minutesToHoursMinutes(minutes: preformerTimeInMin)
@@ -116,9 +116,9 @@ class EventViewController: UIViewController {
     //  Tester
     func testRun() {
         event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPreformers: 3)
-        event?.preformers.append(Preformence(preformenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPreformers: (event?.howManyPreformers)!))
-        event?.preformers.append(Preformence(preformenceName: "Andra", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPreformers: (event?.howManyPreformers)!))
-        event?.preformers.append(Preformence(preformenceName: "Sista", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
+        event?.preformers.append(Preformence(preformenceName: "Första", soundcheckTime: "30 min", changeOverTime: "15 min", showTime: "30 min", lineUpPlacement: "1", howManyPreformers: (event?.howManyPreformers)!))
+        event?.preformers.append(Preformence(preformenceName: "Andra", soundcheckTime: "60 min", changeOverTime: "15 min", showTime: "30 min", lineUpPlacement: "2", howManyPreformers: (event?.howManyPreformers)!))
+        event?.preformers.append(Preformence(preformenceName: "Sista", soundcheckTime: "30 min", changeOverTime: "15 min", showTime: "30 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
     }
 }
 
