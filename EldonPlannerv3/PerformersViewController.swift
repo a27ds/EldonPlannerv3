@@ -1,5 +1,5 @@
 //
-//  PreformersViewController.swift
+//  PerformersViewController.swift
 //  EldonPlannerv3
 //
 //  Created by a27 on 2018-01-31.
@@ -8,17 +8,17 @@
 
 import UIKit
 
-class PreformersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
+class PerformersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource {
     
     //  Outlets
-    @IBOutlet weak var preformersNavBar: UINavigationItem!
-    @IBOutlet weak var preformersTableView: UITableView!
+    @IBOutlet weak var performersNavBar: UINavigationItem!
+    @IBOutlet weak var performersTableView: UITableView!
     @IBOutlet var tap: UITapGestureRecognizer!
     
     //  Variables
     var event: Event? = nil
     
-    let preformersInfoNames = ["Preformence Name", "Soundcheck Time", "Rig Up Time", "Show Time", "Rig Down Time", "Line Up Placement"]
+    let performersInfoNames = ["Performence Name", "Soundcheck Time", "Rig Up Time", "Show Time", "Rig Down Time", "Line Up Placement"]
     var showTimePickerData: [String] = []
     var soundcheckTimePickerData: [String] = []
     var lineUpPlacementData: [String] = []
@@ -47,13 +47,13 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         //        testRun()
-        preformersTableView.delegate = self
-        preformersTableView.dataSource = self
-        preformersTableView.alwaysBounceVertical = false
-        preformersTableView.tableFooterView = UIView()
-        preformersTableView.rowHeight = 44.0
-        preformersTableView.backgroundView = UIView()
-        preformersTableView.backgroundView?.addGestureRecognizer(tap)
+        performersTableView.delegate = self
+        performersTableView.dataSource = self
+        performersTableView.alwaysBounceVertical = false
+        performersTableView.tableFooterView = UIView()
+        performersTableView.rowHeight = 44.0
+        performersTableView.backgroundView = UIView()
+        performersTableView.backgroundView?.addGestureRecognizer(tap)
         appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
@@ -64,20 +64,20 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     //  IBActions
     @IBAction func tapPressed(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
-        preformersTableView.deselectRow(at: cellIndexPath!, animated: true)
+        performersTableView.deselectRow(at: cellIndexPath!, animated: true)
     }
     
     //  Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toEventInfo" {
             let destVC = segue.destination as! EventViewController
-            addPreformersInfoToPreformenceArray()
+            addPerformersInfoToPerformenceArray()
             destVC.event = event
         }
     }
     
-    func addPreformersInfoToPreformenceArray() {
-        event?.preformers.append(Preformence(preformenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPreformers: (event?.howManyPreformers)!))
+    func addPerformersInfoToPerformenceArray() {
+        event?.performers.append(Performence(performenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPerformers: (event?.howManyPerformers)!))
     }
     
     func removeMinFromTotalTime(sender: UITextField, timeTotalMin: Int) -> Int{
@@ -92,16 +92,16 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
 //    //Methods --> Going thru all cells and make the inputview active
 //    func initInputViewsForUITextFields() {
-//        let visiblesCells = preformersTableView.visibleCells
+//        let visiblesCells = performersTableView.visibleCells
 //        for cell in visiblesCells {
-//            let path = preformersTableView.indexPath(for: cell)
-//            tableView(preformersTableView, didSelectRowAt: path!)
+//            let path = performersTableView.indexPath(for: cell)
+//            tableView(performersTableView, didSelectRowAt: path!)
 //        }
 //    }
     
     // Methods --> Append Line up data
     func appendLineUpPlacementData() {
-        for i in 1...event!.howManyPreformers {
+        for i in 1...event!.howManyPerformers {
             lineUpPlacementData.append("\(i)")
         }
     }
@@ -111,7 +111,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         cellIndexPath = indexPath
         setTagToName()
         switch indexPath.row {
-        case 0:             //Preformence Name tag = 200
+        case 0:             //performence Name tag = 200
             textFieldEdit(name!)
         case 1:             //Soundcheck Time tag = 201
             if soundcheckEdit == true {
@@ -279,19 +279,19 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     // Methods --> Making Nav buttons with functions connected to them
     func makeAddButton() {
         let editButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addButtonFunc))
-        preformersNavBar.rightBarButtonItem = editButtonItem
+        performersNavBar.rightBarButtonItem = editButtonItem
     }
     
     @objc func addButtonFunc() {
-        addPreformersInfoToPreformenceArray()
+        addPerformersInfoToPerformenceArray()
         removeSelectedLineUpPlacementFromArray()
         resetTextFields()
-        preformersNavBar.rightBarButtonItem = nil
+        performersNavBar.rightBarButtonItem = nil
     }
     
     func makeDoneButton() {
         let editButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
-        preformersNavBar.rightBarButtonItem = editButtonItem
+        performersNavBar.rightBarButtonItem = editButtonItem
     }
     
     @objc func doneButtonFunc() {
@@ -315,7 +315,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return preformersInfoNames.count
+        return performersInfoNames.count
     }
     
     func setTagToName() {
@@ -328,9 +328,9 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "preformersCell") as! PreformersTableViewCell
-        cell.preformersCellLabel.text = preformersInfoNames[indexPath.row]
-        cell.preformersCellTextField.tag = indexPath.row + 200
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PerformersCell") as! PerformersTableViewCell
+        cell.performersCellLabel.text = performersInfoNames[indexPath.row]
+        cell.performersCellTextField.tag = indexPath.row + 200
         return cell
     }
     
@@ -396,7 +396,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
 //    //  Tester
 //    func testRun() {
-//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPreformers: 3)
+//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
 //        
 //    }
 }

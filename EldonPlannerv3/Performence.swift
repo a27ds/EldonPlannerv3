@@ -1,5 +1,5 @@
 //
-//  Preformence.swift
+//  Performence.swift
 //  EldonPlannerv3
 //
 //  Created by a27 on 2018-02-05.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-class Preformence {
-    var preformenceName: String
+class Performence {
+    var performenceName: String
     var soundcheckTime: String
     var rigUpTime: String
     var showTime: String
@@ -17,17 +17,17 @@ class Preformence {
     var lineUpPlacement: String
     var timeForShow: String
     var timeForChangeOver : String
-    var preformerTotalTimeInMin: Int
+    var performerTotalTimeInMin: Int
     var changeOverTimeInt : Int
     var soundcheckTimeInt: Int
     var rigUpTimeInt: Int
     var showTimeInt: Int
     var rigDownTimeInt: Int
     var lineUpPlacementInt: Int
-    var howManyPreformers: Int
+    var howManyPerformers: Int
     
-    init(preformenceName: String, soundcheckTime: String, rigUpTime: String, showTime: String, rigDownTime: String, lineUpPlacement: String, howManyPreformers: Int) {
-        self.preformenceName = preformenceName
+    init(performenceName: String, soundcheckTime: String, rigUpTime: String, showTime: String, rigDownTime: String, lineUpPlacement: String, howManyPerformers: Int) {
+        self.performenceName = performenceName
         self.soundcheckTime = soundcheckTime
         self.rigUpTime = rigUpTime
         self.showTime = showTime
@@ -35,26 +35,26 @@ class Preformence {
         self.lineUpPlacement = lineUpPlacement
         self.timeForShow = "22:22"
         self.timeForChangeOver = "11:11"
-        self.preformerTotalTimeInMin = 0
+        self.performerTotalTimeInMin = 0
         self.changeOverTimeInt = 0
         self.soundcheckTimeInt = Int(soundcheckTime.dropLast(4))!
         self.rigUpTimeInt = Int(rigUpTime.dropLast(4))!
         self.showTimeInt = Int(showTime.dropLast(4))!
         self.rigDownTimeInt = Int(rigDownTime.dropLast(4))!
         self.lineUpPlacementInt = Int(lineUpPlacement)!
-        self.howManyPreformers = howManyPreformers
-//        totalShowTimeInMinForPreformers()
+        self.howManyPerformers = howManyPerformers
+//        totalShowTimeInMinForPerformers()
     }
-//    func totalShowTimeInMinForPreformers() {
-//        if lineUpPlacementInt == 1 { //First preformer
-//            preformerTotalTimeInMin = showTimeInt + rigDownTimeInt
-//            print(preformerTotalTimeInMin)
-//        } else if lineUpPlacementInt == howManyPreformers { // Last preformer
-//            preformerTotalTimeInMin = rigUpTimeInt + showTimeInt
-//            print(preformerTotalTimeInMin)
-//        } else { //in the middle preformers
-//            preformerTotalTimeInMin = rigUpTimeInt + showTimeInt + rigDownTimeInt
-//            print(preformerTotalTimeInMin)
+//    func totalShowTimeInMinForPerformers() {
+//        if lineUpPlacementInt == 1 { //First performer
+//            performerTotalTimeInMin = showTimeInt + rigDownTimeInt
+//            print(performerTotalTimeInMin)
+//        } else if lineUpPlacementInt == howManyPerformers { // Last performer
+//            performerTotalTimeInMin = rigUpTimeInt + showTimeInt
+//            print(performerTotalTimeInMin)
+//        } else { //in the middle performers
+//            performerTotalTimeInMin = rigUpTimeInt + showTimeInt + rigDownTimeInt
+//            print(performerTotalTimeInMin)
 //        }
 //    }
 }

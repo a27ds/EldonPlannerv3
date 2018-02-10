@@ -89,7 +89,7 @@
                         <outlet property="eventNavBar" destination="oW4-io-WVF" id="m5P-OH-BLT"/>
                         <outlet property="eventTableView" destination="l9O-4k-vZe" id="6pM-Rv-jrv"/>
                         <outlet property="tap" destination="xta-hk-wH6" id="VJQ-dz-WrL"/>
-                        <segue destination="1Nk-NO-m3p" kind="presentation" identifier="toAddPreformers" modalTransitionStyle="flipHorizontal" id="1aJ-Op-nRI"/>
+                        <segue destination="1Nk-NO-m3p" kind="presentation" identifier="toAddPerformers" modalTransitionStyle="flipHorizontal" id="1aJ-Op-nRI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -1,5 +1,5 @@
 //
-//  PreformersTableViewCell.swift
+//  PerformersTableViewCell.swift
 //  EldonPlannerv3
 //
 //  Created by a27 on 2018-01-31.
@@ -8,10 +8,10 @@
 
 import UIKit
 
-class PreformersTableViewCell: UITableViewCell {
+class PerformersTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var preformersCellLabel: UILabel!
-    @IBOutlet weak var preformersCellTextField: UITextField!
+    @IBOutlet weak var performersCellLabel: UILabel!
+    @IBOutlet weak var performersCellTextField: UITextField!
     
     override func awakeFromNib() {
         super.awakeFromNib()

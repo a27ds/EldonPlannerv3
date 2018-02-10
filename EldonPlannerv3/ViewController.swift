@@ -28,7 +28,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var doors: UITextField? = nil
     var musicCurfew: UITextField? = nil
     var venueCurfew: UITextField? = nil
-    var howManyPreformers: UITextField? = nil
+    var howManyPerformers: UITextField? = nil
     
     var cellIndexPath: IndexPath? = nil
     
@@ -55,15 +55,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if !anyInputFieldIsEmpty() {
             alertIfAnyInputFieldIsEmpty()
         } else {
-            self.performSegue(withIdentifier: "toAddPreformers", sender: sender)
+            self.performSegue(withIdentifier: "toAddPerformers", sender: sender)
         }
     }
     
     //  Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toAddPreformers" {
-            let destVC = segue.destination as! PreformersViewController
-            destVC.event = Event(date: (date?.text!)!, getIn: (getIn?.text!)!, dinner: (dinner?.text!)!, doors: (doors?.text!)!, musicCurfew: (musicCurfew?.text!)!, venueCurfew: (venueCurfew?.text!)!, howManyPreformers: Int((howManyPreformers?.text!)!)!)
+        if segue.identifier == "toAddPerformers" {
+            let destVC = segue.destination as! PerformersViewController
+            destVC.event = Event(date: (date?.text!)!, getIn: (getIn?.text!)!, dinner: (dinner?.text!)!, doors: (doors?.text!)!, musicCurfew: (musicCurfew?.text!)!, venueCurfew: (venueCurfew?.text!)!, howManyPerformers: Int((howManyPerformers?.text!)!)!)
         }
     }
     
@@ -89,8 +89,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         case 5:             //Venue Curfew tag = 105
             timeForTimeWheel = "00:00"
             textFieldEdit(venueCurfew!)
-        case 6:             //How many preformers tag = 106
-            textFieldEdit(howManyPreformers!)
+        case 6:             //How many performers tag = 106
+            textFieldEdit(howManyPerformers!)
         default:
             print("Default")
         }
@@ -118,7 +118,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @objc func doneButtonFunc() {
-        self.performSegue(withIdentifier: "toAddPreformers", sender: nil)
+        self.performSegue(withIdentifier: "toAddPerformers", sender: nil)
     }
     
     //  Methods --> Textfield became active
@@ -141,7 +141,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         doors = self.view.viewWithTag(103) as? UITextField
         musicCurfew = self.view.viewWithTag(104) as? UITextField
         venueCurfew = self.view.viewWithTag(105) as? UITextField
-        howManyPreformers = self.view.viewWithTag(106) as? UITextField
+        howManyPerformers = self.view.viewWithTag(106) as? UITextField
     }
     
     //  Methods --> Construting DatePicker
@@ -216,7 +216,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //  Methods --> Errorchecks
     func anyInputFieldIsEmpty () -> Bool {
-        if (date?.text?.isEmpty)! || (getIn?.text?.isEmpty)! || (dinner?.text?.isEmpty)! || (doors?.text?.isEmpty)! || (musicCurfew?.text?.isEmpty)! || (venueCurfew?.text?.isEmpty)! || (howManyPreformers?.text?.isEmpty)! {
+        if (date?.text?.isEmpty)! || (getIn?.text?.isEmpty)! || (dinner?.text?.isEmpty)! || (doors?.text?.isEmpty)! || (musicCurfew?.text?.isEmpty)! || (venueCurfew?.text?.isEmpty)! || (howManyPerformers?.text?.isEmpty)! {
             return false
         }
         return true
@@ -243,7 +243,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: doors)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: musicCurfew)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: venueCurfew)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: howManyPreformers)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: howManyPerformers)
     }
     
     @objc func textFieldEndEdit() {

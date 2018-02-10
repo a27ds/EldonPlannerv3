@@ -55,57 +55,57 @@ class EventViewController: UIViewController {
     }
     
     func soundcheckInfo () -> String {
-        event?.preformers.sort(by: { Int($0.lineUpPlacement)! > Int($1.lineUpPlacement)! }) //Sortera preformers
+        event?.performers.sort(by: { Int($0.lineUpPlacement)! > Int($1.lineUpPlacement)! }) //Sortera performers
         var soundcheckInfo = String()
         soundcheckInfo.append("\n")
-        soundcheckInfo.append("Soundcheck \((String(describing: event!.preformers[0].preformenceName))): \((String(describing: event!.getIn))) (\(String(describing: event!.preformers[0].soundcheckTimeInt)) min)")
+        soundcheckInfo.append("Soundcheck \((String(describing: event!.performers[0].performenceName))): \((String(describing: event!.getIn))) (\(String(describing: event!.performers[0].soundcheckTimeInt)) min)")
         soundcheckInfo.append("\n")
-        getInCopy = fromGetInToDinner(preformerTimeInMin: (event?.preformers[0].soundcheckTimeInt)!, from: (getInCopy))
-        let lastPreformerSave = event?.preformers[0]
-        event?.preformers.remove(at: 0)
-        for preformer in event!.preformers {
-            soundcheckInfo.append("Soundcheck \(preformer.preformenceName): \(getInCopy) (\(String(describing: preformer.soundcheckTimeInt)) min)")
+        getInCopy = fromGetInToDinner(performerTimeInMin: (event?.performers[0].soundcheckTimeInt)!, from: (getInCopy))
+        let lastPerformerSave = event?.performers[0]
+        event?.performers.remove(at: 0)
+        for performer in event!.performers {
+            soundcheckInfo.append("Soundcheck \(performer.performenceName): \(getInCopy) (\(String(describing: performer.soundcheckTimeInt)) min)")
             soundcheckInfo.append("\n")
-            getInCopy = fromGetInToDinner(preformerTimeInMin: preformer.soundcheckTimeInt, from: (getInCopy))
+            getInCopy = fromGetInToDinner(performerTimeInMin: performer.soundcheckTimeInt, from: (getInCopy))
         }
-        event?.preformers.insert(lastPreformerSave!, at: 0)
+        event?.performers.insert(lastPerformerSave!, at: 0)
         return soundcheckInfo
     }
     
     func showInfo () -> String {
         
-        event?.preformers.sort(by: { Int($0.lineUpPlacement)! > Int($1.lineUpPlacement)! }) //Sortera preformers
-        for preformer in event!.preformers {
-            preformer.timeForShow = fromMusicCurfewToDoors(preformerTimeInMin: preformer.showTimeInt, curfew: musicCurfewCopy)
-            musicCurfewCopy = preformer.timeForShow
-            preformer.timeForChangeOver = fromMusicCurfewToDoors(preformerTimeInMin: getChangeOverTimeInt(preformer: preformer), curfew: musicCurfewCopy)
-            musicCurfewCopy = preformer.timeForChangeOver
+        event?.performers.sort(by: { Int($0.lineUpPlacement)! > Int($1.lineUpPlacement)! }) //Sortera performers
+        for performer in event!.performers {
+            performer.timeForShow = fromMusicCurfewToDoors(performerTimeInMin: performer.showTimeInt, curfew: musicCurfewCopy)
+            musicCurfewCopy = performer.timeForShow
+            performer.timeForChangeOver = fromMusicCurfewToDoors(performerTimeInMin: getChangeOverTimeInt(performer: performer), curfew: musicCurfewCopy)
+            musicCurfewCopy = performer.timeForChangeOver
             
             
         }
-        event?.preformers.sort(by: { Int($0.lineUpPlacement)! < Int($1.lineUpPlacement)! }) //Sortera preformers
+        event?.performers.sort(by: { Int($0.lineUpPlacement)! < Int($1.lineUpPlacement)! }) //Sortera performers
         var showInfo = String()
         showInfo.append("\n")
-        for preformer in event!.preformers {
-            if preformer.lineUpPlacementInt != 1 {
-                showInfo.append("C/O: \(String(preformer.changeOverTimeInt)) min")
+        for performer in event!.performers {
+            if performer.lineUpPlacementInt != 1 {
+                showInfo.append("C/O: \(String(performer.changeOverTimeInt)) min")
                 showInfo.append("\n")
             }
-            showInfo.append("\(preformer.preformenceName): \(preformer.timeForShow) (\(String(describing: preformer.showTimeInt)) min)")
+            showInfo.append("\(performer.performenceName): \(performer.timeForShow) (\(String(describing: performer.showTimeInt)) min)")
             showInfo.append("\n")
             
         }
         return showInfo
     }
     
-    func getChangeOverTimeInt(preformer: Preformence) -> Int{
+    func getChangeOverTimeInt(performer: Performence) -> Int{
         var index = -1
         var changeOver = 0
-        for preformer in event!.preformers {
+        for performer in event!.performers {
             index = index + 1
-            if preformer.lineUpPlacementInt != 1 {
-                changeOver = preformer.rigUpTimeInt + (event?.preformers[index+1].rigDownTimeInt)!
-                preformer.changeOverTimeInt = changeOver
+            if performer.lineUpPlacementInt != 1 {
+                changeOver = performer.rigUpTimeInt + (event?.performers[index+1].rigDownTimeInt)!
+                performer.changeOverTimeInt = changeOver
             }
         }
         return changeOver
@@ -116,10 +116,10 @@ class EventViewController: UIViewController {
     
     
     //  Methods --> Time conversion
-    func fromGetInToDinner(preformerTimeInMin: Int, from: String) -> String {
+    func fromGetInToDinner(performerTimeInMin: Int, from: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        let tuplet = minutesToHoursMinutes(minutes: preformerTimeInMin)
+        let tuplet = minutesToHoursMinutes(minutes: performerTimeInMin)
         var musicCurfew = formatter.date(from: from)!
         musicCurfew = Calendar.current.date(byAdding: .hour, value: tuplet.hours, to: musicCurfew)!
         musicCurfew = Calendar.current.date(byAdding: .minute, value: tuplet.leftMinutes, to: musicCurfew)!
@@ -127,10 +127,10 @@ class EventViewController: UIViewController {
         return getInCopy
     }
     
-    func fromMusicCurfewToDoors(preformerTimeInMin: Int, curfew: String) -> String {
+    func fromMusicCurfewToDoors(performerTimeInMin: Int, curfew: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        let tuplet = minutesToHoursMinutes(minutes: preformerTimeInMin)
+        let tuplet = minutesToHoursMinutes(minutes: performerTimeInMin)
         var musicCurfew = formatter.date(from: curfew)!
         musicCurfew = Calendar.current.date(byAdding: .hour, value: -tuplet.hours, to: musicCurfew)!
         musicCurfew = Calendar.current.date(byAdding: .minute, value: -tuplet.leftMinutes, to: musicCurfew)!
@@ -143,12 +143,12 @@ class EventViewController: UIViewController {
     }
 //    //  Tester
 //    func testRun() {
-//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPreformers: 3)
-//        event?.preformers.append(Preformence(preformenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPreformers: (event?.howManyPreformers)!))
-//        event?.preformers.append(Preformence(preformenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPreformers: (event?.howManyPreformers)!))
-////        event?.preformers.append(Preformence(preformenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
-////        event?.preformers.append(Preformence(preformenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPreformers: (event?.howManyPreformers)!))
-//        event?.preformers.append(Preformence(preformenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
+//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
+//        event?.performers.append(performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
+//        event?.performers.append(performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
+////        event?.performers.append(performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
+////        event?.performers.append(performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
+//        event?.performers.append(performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
 //    }
 }
 
