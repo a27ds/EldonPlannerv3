@@ -23,7 +23,7 @@ class EventViewController: UIViewController {
     // ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        testRun()
+//        testRun()
         getInCopy = (event?.getIn)!
         musicCurfewCopy = (event?.musicCurfew)!
         eventInfo.text = eventInfoText()
@@ -73,19 +73,47 @@ class EventViewController: UIViewController {
     }
     
     func showInfo () -> String {
+        
         event?.preformers.sort(by: { Int($0.lineUpPlacement)! > Int($1.lineUpPlacement)! }) //Sortera preformers
         for preformer in event!.preformers {
-            preformer.timeForShow = fromMusicCurfewToDoors(preformerTimeInMin: preformer.preformerTotalTimeInMin, curfew: (musicCurfewCopy))
+            preformer.timeForShow = fromMusicCurfewToDoors(preformerTimeInMin: preformer.showTimeInt, curfew: musicCurfewCopy)
+            musicCurfewCopy = preformer.timeForShow
+            preformer.timeForChangeOver = fromMusicCurfewToDoors(preformerTimeInMin: getChangeOverTimeInt(preformer: preformer), curfew: musicCurfewCopy)
+            musicCurfewCopy = preformer.timeForChangeOver
+            
+            
         }
         event?.preformers.sort(by: { Int($0.lineUpPlacement)! < Int($1.lineUpPlacement)! }) //Sortera preformers
         var showInfo = String()
         showInfo.append("\n")
         for preformer in event!.preformers {
+            if preformer.lineUpPlacementInt != 1 {
+                showInfo.append("C/O: \(String(preformer.changeOverTimeInt)) min")
+                showInfo.append("\n")
+            }
             showInfo.append("\(preformer.preformenceName): \(preformer.timeForShow) (\(String(describing: preformer.showTimeInt)) min)")
             showInfo.append("\n")
+            
         }
         return showInfo
     }
+    
+    func getChangeOverTimeInt(preformer: Preformence) -> Int{
+        var index = -1
+        var changeOver = 0
+        for preformer in event!.preformers {
+            index = index + 1
+            if preformer.lineUpPlacementInt != 1 {
+                changeOver = preformer.rigUpTimeInt + (event?.preformers[index+1].rigDownTimeInt)!
+                preformer.changeOverTimeInt = changeOver
+            }
+        }
+        return changeOver
+    }
+    
+    
+    
+    
     
     //  Methods --> Time conversion
     func fromGetInToDinner(preformerTimeInMin: Int, from: String) -> String {
@@ -113,12 +141,14 @@ class EventViewController: UIViewController {
     func minutesToHoursMinutes (minutes : Int) -> (hours : Int , leftMinutes : Int) {
         return (minutes / 60, (minutes % 60))
     }
-    //  Tester
-    func testRun() {
-        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPreformers: 3)
-        event?.preformers.append(Preformence(preformenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPreformers: (event?.howManyPreformers)!))
-        event?.preformers.append(Preformence(preformenceName: "Andra", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPreformers: (event?.howManyPreformers)!))
-        event?.preformers.append(Preformence(preformenceName: "Sista", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
-    }
+//    //  Tester
+//    func testRun() {
+//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPreformers: 3)
+//        event?.preformers.append(Preformence(preformenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPreformers: (event?.howManyPreformers)!))
+//        event?.preformers.append(Preformence(preformenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPreformers: (event?.howManyPreformers)!))
+////        event?.preformers.append(Preformence(preformenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
+////        event?.preformers.append(Preformence(preformenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPreformers: (event?.howManyPreformers)!))
+//        event?.preformers.append(Preformence(preformenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPreformers: (event?.howManyPreformers)!))
+//    }
 }
 

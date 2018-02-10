@@ -57,7 +57,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
-        initInputViewsForUITextFields()
+//        initInputViewsForUITextFields()
         
     }
     
@@ -90,14 +90,14 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    //Methods --> Going thru all cells and make the inputview active
-    func initInputViewsForUITextFields() {
-        let visiblesCells = preformersTableView.visibleCells
-        for cell in visiblesCells {
-            let path = preformersTableView.indexPath(for: cell)
-            tableView(preformersTableView, didSelectRowAt: path!)
-        }
-    }
+//    //Methods --> Going thru all cells and make the inputview active
+//    func initInputViewsForUITextFields() {
+//        let visiblesCells = preformersTableView.visibleCells
+//        for cell in visiblesCells {
+//            let path = preformersTableView.indexPath(for: cell)
+//            tableView(preformersTableView, didSelectRowAt: path!)
+//        }
+//    }
     
     // Methods --> Append Line up data
     func appendLineUpPlacementData() {
@@ -211,6 +211,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         soundcheckTimer.delegate = self
         soundcheckTimer.dataSource = self
         soundcheckTimer.selectRow(5, inComponent: 0, animated: true) // väljer vart man vill börja i soundcheckTimer
+        pickerView(soundcheckTimer, didSelectRow: 5, inComponent: 0)
         sender.inputView = soundcheckTimer
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
@@ -220,6 +221,7 @@ class PreformersViewController: UIViewController, UITableViewDelegate, UITableVi
         lineUpPlacementPicker.tag = 3
         lineUpPlacementPicker.delegate = self
         lineUpPlacementPicker.dataSource = self
+        pickerView(lineUpPlacementPicker, didSelectRow: 0, inComponent: 0)
         sender.inputView = lineUpPlacementPicker
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
