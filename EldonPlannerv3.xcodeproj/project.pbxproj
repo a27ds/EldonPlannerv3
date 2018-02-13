@@ -16,6 +16,7 @@
 		F3790F86202070EF008EDDF5 /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3790F85202070EF008EDDF5 /* EventTableViewCell.swift */; };
 		F3992E7F202242FB00EAA57B /* PerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3992E7E202242FB00EAA57B /* PerformersViewController.swift */; };
 		F3992E81202245FD00EAA57B /* PerformersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3992E80202245FD00EAA57B /* PerformersTableViewCell.swift */; };
+		F39E9DFF2031991800BA7FAB /* EventInfoSideMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39E9DFE2031991800BA7FAB /* EventInfoSideMenuTableViewCell.swift */; };
 		F3C7D82C202841DC00CCD4F3 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C7D82B202841DC00CCD4F3 /* Event.swift */; };
 		F3C7D82E2028422E00CCD4F3 /* Performence.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C7D82D2028422E00CCD4F3 /* Performence.swift */; };
 		F3C7D82F20284A9000CCD4F3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3790F7220206DFA008EDDF5 /* ViewController.swift */; };
@@ -34,6 +35,7 @@
 		F3790F85202070EF008EDDF5 /* EventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
 		F3992E7E202242FB00EAA57B /* PerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformersViewController.swift; sourceTree = "<group>"; };
 		F3992E80202245FD00EAA57B /* PerformersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformersTableViewCell.swift; sourceTree = "<group>"; };
+		F39E9DFE2031991800BA7FAB /* EventInfoSideMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventInfoSideMenuTableViewCell.swift; sourceTree = "<group>"; };
 		F3C7D82B202841DC00CCD4F3 /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		F3C7D82D2028422E00CCD4F3 /* Performence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Performence.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 				F3992E7E202242FB00EAA57B /* PerformersViewController.swift */,
 				F32DF1BE20289D40007EB849 /* EventViewController.swift */,
 				F3790F85202070EF008EDDF5 /* EventTableViewCell.swift */,
+				F39E9DFE2031991800BA7FAB /* EventInfoSideMenuTableViewCell.swift */,
 				F3992E80202245FD00EAA57B /* PerformersTableViewCell.swift */,
 				F3C7D82B202841DC00CCD4F3 /* Event.swift */,
 				F3C7D82D2028422E00CCD4F3 /* Performence.swift */,
@@ -165,6 +168,7 @@
 				F32DF1BF20289D40007EB849 /* EventViewController.swift in Sources */,
 				F3C7D82C202841DC00CCD4F3 /* Event.swift in Sources */,
 				F3C7D82F20284A9000CCD4F3 /* ViewController.swift in Sources */,
+				F39E9DFF2031991800BA7FAB /* EventInfoSideMenuTableViewCell.swift in Sources */,
 				F3790F7120206DFA008EDDF5 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

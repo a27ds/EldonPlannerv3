@@ -42,11 +42,16 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var rigDownTimeSave: Int = 0
     
     var cellIndexPath: IndexPath? = nil
+    var whatPerformerWillLoad: Any?
+    var isEditMode: Bool = false
+    
+//    var whichPerformerWillBeEdit: Int?
     
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        testRun()
+//                testRun()
+        print(whatPerformerWillLoad!)
         performersTableView.delegate = self
         performersTableView.dataSource = self
         performersTableView.alwaysBounceVertical = false
@@ -57,8 +62,32 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
+        if isEditMode {
+            setTagToName()
+            editMode()
+        } else {
+        print("ej i edit mode")
+        }
 //        initInputViewsForUITextFields()
         
+    }
+    func editMode() {
+        print("Editmode!!!")
+        showValuesInTextFieldsFromPerformersArray()
+//        makeSaveButton()
+        
+    }
+    
+    func showValuesInTextFieldsFromPerformersArray() {
+        print(whatPerformerWillLoad)
+        let performerValues = event?.performers[whatPerformerWillLoad as! Int]
+        print(performerValues?.performenceName)
+        name?.text = performerValues?.performenceName
+        soundcheckTime?.text = performerValues?.soundcheckTime
+        rigUpTime?.text = performerValues?.rigUpTime
+        showTime?.text = performerValues?.showTime
+        rigDownTime?.text = performerValues?.rigDownTime
+        performersTableView.reloadData()
     }
     
     //  IBActions
@@ -298,6 +327,15 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         self.performSegue(withIdentifier: "toEventInfo", sender: nil)
     }
     
+    func makeSaveButton() {
+        let saveButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(self.saveButtonFunc))
+        performersNavBar.rightBarButtonItem = saveButtonItem
+    }
+    
+    @objc func saveButtonFunc() {
+        // spara den som man har editerat
+    }
+    
     //  Methods --> Errorchecks
     func ifAnyInputFieldIsEmpty () -> Bool {
         if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
@@ -315,7 +353,12 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return performersInfoNames.count
+        let count = performersInfoNames.count
+        if isEditMode {
+        return count - 1
+        } else {
+            return count
+        }
     }
     
     func setTagToName() {
@@ -328,7 +371,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PerformersCell") as! PerformersTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "performersCell") as! PerformersTableViewCell
         cell.performersCellLabel.text = performersInfoNames[indexPath.row]
         cell.performersCellTextField.tag = indexPath.row + 200
         return cell
@@ -397,6 +440,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
 //    //  Tester
 //    func testRun() {
 //        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
-//        
+//
 //    }
 }

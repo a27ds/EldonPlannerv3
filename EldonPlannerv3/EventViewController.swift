@@ -8,36 +8,64 @@
 
 import UIKit
 
-class EventViewController: UIViewController {
-    
+class EventViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
     //  IBOutlets
     @IBOutlet weak var eventInfo: UITextView!
     @IBOutlet weak var eventNavBar: UINavigationItem!
+    @IBOutlet weak var eventSideMenuConstraint: NSLayoutConstraint!
+    @IBOutlet weak var eventSideMenuTableView: UITableView!
     
     //  Variabels
     var event: Event? = nil
-    
     var getInCopy: String = ""
     var musicCurfewCopy: String = ""
+    var sideMenuIsHidden = true
     
     // ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-//        testRun()
+        testRun()
         getInCopy = (event?.getIn)!
         musicCurfewCopy = (event?.musicCurfew)!
         eventInfo.text = eventInfoText()
-        makeCopyButton()
+        makeButtons()
+        setSideMenuConstraint(value: 0)
+        eventSideMenuTableView.delegate = self
+        eventSideMenuTableView.dataSource = self
+        eventSideMenuTableView.alwaysBounceVertical = false
+        eventSideMenuTableView.tableFooterView = UIView()
     }
     
     //  Methods --> Button becomes visable
-    func makeCopyButton () {
-        let copyButtonItem = UIBarButtonItem(title: "Copy", style: .plain, target: self, action: #selector(self.doneButtonFunc))
+    func makeButtons () {
+        let copyButtonItem = UIBarButtonItem(title: "Copy", style: .plain, target: self, action: #selector(self.copyButtonFunc))
         eventNavBar.rightBarButtonItem = copyButtonItem
+        let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(self.editButtonFunc))
+        eventNavBar.leftBarButtonItem = editButton
     }
     
-    @objc func doneButtonFunc() {
+    @objc func copyButtonFunc() {
         UIPasteboard.general.string = eventInfo.text
+    }
+    
+    func setSideMenuConstraint(value: CGFloat) {
+        eventSideMenuConstraint.constant = value
+    }
+    
+    @objc func editButtonFunc() {
+        if sideMenuIsHidden {
+            setSideMenuConstraint(value: 0)
+            UIView.animate(withDuration: 0.3, animations: {
+                self.view.layoutIfNeeded()
+            })
+        } else {
+            setSideMenuConstraint(value: -150)
+            UIView.animate(withDuration: 0.3, animations: {
+                self.view.layoutIfNeeded()
+            })
+        }
+        sideMenuIsHidden = !sideMenuIsHidden
     }
     
     //  Methods --> Create Event Info
@@ -73,7 +101,6 @@ class EventViewController: UIViewController {
     }
     
     func showInfo () -> String {
-        
         event?.performers.sort(by: { Int($0.lineUpPlacement)! > Int($1.lineUpPlacement)! }) //Sortera performers
         for performer in event!.performers {
             performer.timeForShow = fromMusicCurfewToDoors(performerTimeInMin: performer.showTimeInt, curfew: musicCurfewCopy)
@@ -111,10 +138,6 @@ class EventViewController: UIViewController {
         return changeOver
     }
     
-    
-    
-    
-    
     //  Methods --> Time conversion
     func fromGetInToDinner(performerTimeInMin: Int, from: String) -> String {
         let formatter = DateFormatter()
@@ -141,14 +164,42 @@ class EventViewController: UIViewController {
     func minutesToHoursMinutes (minutes : Int) -> (hours : Int , leftMinutes : Int) {
         return (minutes / 60, (minutes % 60))
     }
-//    //  Tester
-//    func testRun() {
-//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
-//        event?.performers.append(performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
-//        event?.performers.append(performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
-////        event?.performers.append(performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
-////        event?.performers.append(performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
-//        event?.performers.append(performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
-//    }
+    
+    //  Helpers --> Tableview
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return (event?.howManyPerformers)!
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "eventInfoSideMenuCell") as! EventInfoSideMenuTableViewCell
+        cell.eventInfoSideMenuCellLabel.text = event?.performers[indexPath.row].performenceName
+        return cell
+    }
+    
+    //  Methods --> Select Tableview cell
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("tryckte på \(indexPath.row)")
+        self.performSegue(withIdentifier: "editPerformers", sender: indexPath.row)
+        }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editPerformers" {
+            let destVC = segue.destination as! PerformersViewController
+            destVC.whatPerformerWillLoad = sender
+            destVC.event = event
+            destVC.isEditMode = true
+        }
+    }
+    
+    
+    //  Tester
+    func testRun() {
+        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
+        event?.performers.append(Performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
+        event?.performers.append(Performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
+//        event?.performers.append(Performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
+//        event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
+        event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
+    }
 }
 
