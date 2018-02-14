@@ -45,13 +45,10 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var whatPerformerWillLoad: Any?
     var isEditMode: Bool = false
     
-//    var whichPerformerWillBeEdit: Int?
-    
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-//                testRun()
-        print(whatPerformerWillLoad!)
+        //                testRun()
         performersTableView.delegate = self
         performersTableView.dataSource = self
         performersTableView.alwaysBounceVertical = false
@@ -62,32 +59,42 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
-        if isEditMode {
-            setTagToName()
-            editMode()
-        } else {
-        print("ej i edit mode")
-        }
-//        initInputViewsForUITextFields()
-        
-    }
-    func editMode() {
-        print("Editmode!!!")
-        showValuesInTextFieldsFromPerformersArray()
-//        makeSaveButton()
-        
+        //        initInputViewsForUITextFields()
     }
     
-    func showValuesInTextFieldsFromPerformersArray() {
-        print(whatPerformerWillLoad)
-        let performerValues = event?.performers[whatPerformerWillLoad as! Int]
-        print(performerValues?.performenceName)
-        name?.text = performerValues?.performenceName
-        soundcheckTime?.text = performerValues?.soundcheckTime
-        rigUpTime?.text = performerValues?.rigUpTime
-        showTime?.text = performerValues?.showTime
-        rigDownTime?.text = performerValues?.rigDownTime
-        performersTableView.reloadData()
+    //Helpers --> Checks if any UITextfield did end it's editing, and then runs shouldNextButtonDisplay
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: name)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: soundcheckTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigUpTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
+        if isEditMode {
+            editMode()
+        } else {
+            print("ej i edit mode")
+        }
+    }
+    
+    @objc func textFieldEndEdit() {
+        if !isEditMode {
+            if lineUpPlacementData.count == 1 {
+                shouldDoneButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
+            } else {
+                shouldAddButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    
+    func editMode() {
+        print("Editmode!!!")
+        makeSaveButton()
     }
     
     //  IBActions
@@ -100,7 +107,9 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toEventInfo" {
             let destVC = segue.destination as! EventViewController
-            addPerformersInfoToPerformenceArray()
+            if !isEditMode {
+                addPerformersInfoToPerformenceArray()
+            }
             destVC.event = event
         }
     }
@@ -119,14 +128,14 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-//    //Methods --> Going thru all cells and make the inputview active
-//    func initInputViewsForUITextFields() {
-//        let visiblesCells = performersTableView.visibleCells
-//        for cell in visiblesCells {
-//            let path = performersTableView.indexPath(for: cell)
-//            tableView(performersTableView, didSelectRowAt: path!)
-//        }
-//    }
+    //    //Methods --> Going thru all cells and make the inputview active
+    //    func initInputViewsForUITextFields() {
+    //        let visiblesCells = performersTableView.visibleCells
+    //        for cell in visiblesCells {
+    //            let path = performersTableView.indexPath(for: cell)
+    //            tableView(performersTableView, didSelectRowAt: path!)
+    //        }
+    //    }
     
     // Methods --> Append Line up data
     func appendLineUpPlacementData() {
@@ -257,13 +266,17 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Building Up Time array
     func showTimeEveryFiveMinInTotal() {
-        let everyFiveMinInTotalShowTime = (event?.showTimeTotalInMin)! / 5
-        appendTimeInPickerData(runs: everyFiveMinInTotalShowTime, array: &showTimePickerData)
+        if event!.showTimeTotalInMin >= 5 {
+            let everyFiveMinInTotalShowTime = (event?.showTimeTotalInMin)! / 5
+            appendTimeInPickerData(runs: everyFiveMinInTotalShowTime, array: &showTimePickerData)
+        }
     }
     
     func soundcheckTimeEveryFiveMinInTotal() {
-        let everyFiveMinInTotalSoundcheckTime = (event?.soundcheckTimeTotalInMin)! / 5
-        appendTimeInPickerData(runs: everyFiveMinInTotalSoundcheckTime, array: &soundcheckTimePickerData)
+        if event!.soundcheckTimeTotalInMin >= 5 {
+            let everyFiveMinInTotalSoundcheckTime = (event?.soundcheckTimeTotalInMin)! / 5
+            appendTimeInPickerData(runs: everyFiveMinInTotalSoundcheckTime, array: &soundcheckTimePickerData)
+        }
     }
     
     func appendTimeInPickerData(runs: Int, array: inout [String]) {
@@ -312,6 +325,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func addButtonFunc() {
+        setTagToName()
         addPerformersInfoToPerformenceArray()
         removeSelectedLineUpPlacementFromArray()
         resetTextFields()
@@ -333,15 +347,26 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func saveButtonFunc() {
-        // spara den som man har editerat
+        setTagToName()
+        let lineUpPlacementSave = event?.performers[whatPerformerWillLoad as! Int].lineUpPlacement
+        event?.performers.remove(at: whatPerformerWillLoad as! Int)
+        event?.performers.append((Performence(performenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: lineUpPlacementSave!, howManyPerformers: (event?.howManyPerformers)!)))
+        self.performSegue(withIdentifier: "toEventInfo", sender: nil)
     }
     
     //  Methods --> Errorchecks
     func ifAnyInputFieldIsEmpty () -> Bool {
-        if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
+        if isEditMode {
+            if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! {
+                return false
+            } else {
+                return true
+            }
+        } else if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! || (lineUpPlacement?.text?.isEmpty)! {
             return false
+        } else {
+            return true
         }
-        return true
     }
     
     //  Methods --> Alerts
@@ -355,7 +380,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = performersInfoNames.count
         if isEditMode {
-        return count - 1
+            return count-1
         } else {
             return count
         }
@@ -370,10 +395,16 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         lineUpPlacement = self.view.viewWithTag(205) as? UITextField
     }
     
+    var counter = 0
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "performersCell") as! PerformersTableViewCell
         cell.performersCellLabel.text = performersInfoNames[indexPath.row]
         cell.performersCellTextField.tag = indexPath.row + 200
+        if isEditMode {
+            let performerValues = event?.performers[whatPerformerWillLoad as! Int]
+            let getPerformerValue = performerValues?.getPerformerValue()
+            cell.performersCellTextField.text = getPerformerValue?[indexPath.row]
+        }
         return cell
     }
     
@@ -415,31 +446,8 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    //Helpers --> Checks if any UITextfield did end it's editing, and then runs shouldNextButtonDisplay
-    override func viewWillAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: name)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: soundcheckTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigUpTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
+    //  Tester
+    func testRun() {
+        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
     }
-    
-    @objc func textFieldEndEdit() {
-        if lineUpPlacementData.count == 1 {
-            shouldDoneButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
-        } else {
-            shouldAddButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-//    //  Tester
-//    func testRun() {
-//        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
-//
-//    }
 }

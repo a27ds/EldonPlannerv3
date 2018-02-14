@@ -25,12 +25,12 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        testRun()
+//        testRun()
         getInCopy = (event?.getIn)!
         musicCurfewCopy = (event?.musicCurfew)!
         eventInfo.text = eventInfoText()
         makeButtons()
-        setSideMenuConstraint(value: 0)
+        setSideMenuConstraint(value: -150)
         eventSideMenuTableView.delegate = self
         eventSideMenuTableView.dataSource = self
         eventSideMenuTableView.alwaysBounceVertical = false
@@ -107,8 +107,6 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
             musicCurfewCopy = performer.timeForShow
             performer.timeForChangeOver = fromMusicCurfewToDoors(performerTimeInMin: getChangeOverTimeInt(performer: performer), curfew: musicCurfewCopy)
             musicCurfewCopy = performer.timeForChangeOver
-            
-            
         }
         event?.performers.sort(by: { Int($0.lineUpPlacement)! < Int($1.lineUpPlacement)! }) //Sortera performers
         var showInfo = String()
@@ -120,7 +118,6 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
             showInfo.append("\(performer.performenceName): \(performer.timeForShow) (\(String(describing: performer.showTimeInt)) min)")
             showInfo.append("\n")
-            
         }
         return showInfo
     }
@@ -191,7 +188,6 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    
     //  Tester
     func testRun() {
         event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
@@ -202,4 +198,3 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
     }
 }
-

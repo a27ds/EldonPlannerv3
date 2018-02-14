@@ -45,6 +45,11 @@ class Performence {
         self.howManyPerformers = howManyPerformers
 //        totalShowTimeInMinForPerformers()
     }
+    
+    func getPerformerValue() -> Array<String> {
+        let performerArray = [performenceName, soundcheckTime, rigUpTime, showTime, rigDownTime]
+        return performerArray
+    }
 //    func totalShowTimeInMinForPerformers() {
 //        if lineUpPlacementInt == 1 { //First performer
 //            performerTotalTimeInMin = showTimeInt + rigDownTimeInt
