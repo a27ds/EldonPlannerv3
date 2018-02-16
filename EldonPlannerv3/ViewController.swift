@@ -120,9 +120,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @objc func doneButtonFunc() {
-        for textField in self.view.subviews where textField is UITextField {
-            textField.resignFirstResponder()
-        }
+        view.endEditing(true)
         self.performSegue(withIdentifier: "toAddPerformers", sender: nil)
     }
     

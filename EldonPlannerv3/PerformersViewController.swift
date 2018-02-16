@@ -119,6 +119,8 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func addPerformersInfoToPerformenceArray() {
+        view.endEditing(true)
+        performersTableView.deselectRow(at: cellIndexPath!, animated: true)
         event?.performers.append(Performence(performenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPerformers: (event?.howManyPerformers)!))
     }
     
@@ -194,6 +196,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        setTagToName()
         switch indexPath.row {
         case 1:             //Soundcheck Time tag = 201
             guard (soundcheckTime?.text?.isEmpty)! else {
@@ -375,6 +378,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Errorchecks
     func ifAnyInputFieldIsEmpty () -> Bool {
+        setTagToName()
         if isEditMode {
             if (name?.text?.isEmpty)! || (soundcheckTime?.text?.isEmpty)! || (rigUpTime?.text?.isEmpty)! || (showTime?.text?.isEmpty)! || (rigDownTime?.text?.isEmpty)! {
                 return false

@@ -47,6 +47,10 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                                 </textField>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="guq-TG-O8h">
+                                                    <rect key="frame" x="280" y="0.0" width="95" height="44"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="va5-pR-Qdb">
                                                     <rect key="frame" x="15" y="12" width="177" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -56,8 +60,12 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="guq-TG-O8h" firstAttribute="top" secondItem="1hk-Qt-e92" secondAttribute="top" id="1dT-JC-Kxa"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="sob-4J-XEl" secondAttribute="trailing" constant="-1" id="2E8-eC-TrF"/>
                                                 <constraint firstItem="sob-4J-XEl" firstAttribute="centerY" secondItem="1hk-Qt-e92" secondAttribute="centerY" id="7YQ-Rg-XuZ"/>
+                                                <constraint firstAttribute="bottom" secondItem="guq-TG-O8h" secondAttribute="bottom" id="AkD-az-Q1N"/>
+                                                <constraint firstItem="guq-TG-O8h" firstAttribute="leading" secondItem="1hk-Qt-e92" secondAttribute="leading" constant="280" id="a0L-X5-ekY"/>
+                                                <constraint firstAttribute="trailing" secondItem="guq-TG-O8h" secondAttribute="trailing" id="kcA-Yg-9ed"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -138,6 +146,10 @@
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                                 </textField>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6NS-OG-pSD">
+                                                    <rect key="frame" x="64" y="0.0" width="311" height="43.5"/>
+                                                    <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xap-ZL-KJ2">
                                                     <rect key="frame" x="14" y="12" width="42" height="21"/>
                                                     <constraints>
@@ -152,7 +164,11 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="Fwn-rR-RwQ" secondAttribute="trailing" constant="-1" id="2t4-z4-cps"/>
                                                 <constraint firstItem="Fwn-rR-RwQ" firstAttribute="centerY" secondItem="xap-ZL-KJ2" secondAttribute="centerY" id="HPU-9m-iIp"/>
                                                 <constraint firstItem="xap-ZL-KJ2" firstAttribute="leading" secondItem="8lg-6c-7yP" secondAttribute="leadingMargin" constant="-1" id="bE0-iM-Bfq"/>
+                                                <constraint firstAttribute="trailing" secondItem="6NS-OG-pSD" secondAttribute="trailing" id="hJg-Dm-UsZ"/>
+                                                <constraint firstItem="6NS-OG-pSD" firstAttribute="top" secondItem="8lg-6c-7yP" secondAttribute="top" id="hrz-Oo-l8l"/>
+                                                <constraint firstItem="6NS-OG-pSD" firstAttribute="leading" secondItem="xap-ZL-KJ2" secondAttribute="trailing" constant="8" symbolic="YES" id="i11-5U-wvE"/>
                                                 <constraint firstItem="Fwn-rR-RwQ" firstAttribute="centerY" secondItem="8lg-6c-7yP" secondAttribute="centerY" id="iIC-kh-g1O"/>
+                                                <constraint firstAttribute="bottom" secondItem="6NS-OG-pSD" secondAttribute="bottom" id="mtI-A0-wab"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xap-ZL-KJ2" secondAttribute="trailingMargin" id="zbn-Y9-QAS"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -181,7 +197,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="943.20000000000005" y="119.1904047976012"/>
+            <point key="canvasLocation" x="721" y="118"/>
         </scene>
         <!--Event View Controller-->
         <scene sceneID="1Lu-M6-Lz2">
@@ -302,6 +318,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="2lL-r8-cmP"/>
         <segue reference="Fse-Yg-oMf"/>
     </inferredMetricsTieBreakers>
 </document>
