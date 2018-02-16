@@ -9,12 +9,14 @@
 import UIKit
 
 class EventViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     //  IBOutlets
     @IBOutlet weak var eventInfo: UITextView!
+    @IBOutlet weak var eventInfoBackground: UIView!
     @IBOutlet weak var eventNavBar: UINavigationItem!
     @IBOutlet weak var eventSideMenuConstraint: NSLayoutConstraint!
     @IBOutlet weak var eventSideMenuTableView: UITableView!
+    
     
     //  Variabels
     var event: Event? = nil
@@ -25,7 +27,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-//        testRun()
+        //        testRun()
         getInCopy = (event?.getIn)!
         musicCurfewCopy = (event?.musicCurfew)!
         eventInfo.text = eventInfoText()
@@ -53,19 +55,64 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         eventSideMenuConstraint.constant = value
     }
     
-    @objc func editButtonFunc() {
-        if sideMenuIsHidden {
-            setSideMenuConstraint(value: 0)
-            UIView.animate(withDuration: 0.3, animations: {
-                self.view.layoutIfNeeded()
+    func blurTextView(isOn: Bool) {
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        if isOn {
+            print("true")
+            UIView.animate(withDuration: 0.4, animations: {
+                blurView.frame = self.eventInfoBackground.bounds
+                self.eventInfoBackground.addSubview(blurView)
             })
         } else {
-            setSideMenuConstraint(value: -150)
-            UIView.animate(withDuration: 0.3, animations: {
-                self.view.layoutIfNeeded()
+            print("false")
+            UIView.animate(withDuration: 0.4, animations: {
+                for subview in self.eventInfoBackground.subviews {
+                    if subview is UIVisualEffectView {
+                        print("körs denna")
+                        subview.removeFromSuperview()
+                    }
+                }
             })
         }
-        sideMenuIsHidden = !sideMenuIsHidden
+    }
+    
+    @objc func editButtonFunc() {
+        event?.performers.sort(by: { Int($0.lineUpPlacement)! < Int($1.lineUpPlacement)! }) //Sortera performers
+        if event!.howManyPerformers <= 4 {
+            showActionSheet()
+        } else {
+            if sideMenuIsHidden {
+                blurTextView(isOn: true)
+                setSideMenuConstraint(value: 0)
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            } else {
+                blurTextView(isOn: false)
+                setSideMenuConstraint(value: -150)
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            }
+            sideMenuIsHidden = !sideMenuIsHidden
+        }
+    }
+    
+    //  ActionSheet
+    func showActionSheet() {
+        var test : UIAlertAction
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        for performer in (event?.performers)! {
+            test = UIAlertAction(title: performer.performenceName, style: .default) { action in
+                self.performSegue(withIdentifier: "editPerformers", sender: performer.lineUpPlacementInt-1)
+            }
+            actionSheet.addAction(test)
+        }
+        actionSheet.addAction(cancel)
+        present(actionSheet, animated: true, completion: nil)
     }
     
     //  Methods --> Create Event Info
@@ -175,9 +222,8 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     //  Methods --> Select Tableview cell
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("tryckte på \(indexPath.row)")
         self.performSegue(withIdentifier: "editPerformers", sender: indexPath.row)
-        }
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "editPerformers" {
@@ -193,8 +239,8 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
         event?.performers.append(Performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
-//        event?.performers.append(Performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
-//        event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
-        event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
+        event?.performers.append(Performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
+        //        event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
+        //        event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "5", howManyPerformers: (event?.howManyPerformers)!))
     }
 }

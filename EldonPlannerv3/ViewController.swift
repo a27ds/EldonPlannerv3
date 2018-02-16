@@ -16,7 +16,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet var tap: UITapGestureRecognizer!
     
     //  Variables
-    let eventInfoNames = ["Date", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew", "How Many Performers"]
+    let eventInfoNames = ["Date", "How Many Performers", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew"]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
     var timeForTimeWheel: String?
     
@@ -35,6 +35,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+//        initInputViewsForUITextFields()
         eventTableView.delegate = self
         eventTableView.dataSource = self
         eventTableView.alwaysBounceVertical = false
@@ -42,7 +43,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         eventTableView.rowHeight = 44.0
         eventTableView.backgroundView = UIView()
         eventTableView.backgroundView?.addGestureRecognizer(tap)
-        initInputViewsForUITextFields()
+        
     }
     
     //  IBActions
@@ -74,23 +75,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         switch indexPath.row {
         case 0:             //Date tag = 100
             textFieldEdit(date!)
-        case 1:             //Get-in tag = 101
-            timeForTimeWheel = "14:00"
-            textFieldEdit(getIn!)
-        case 2:             //Dinner tag = 102
-            timeForTimeWheel = "17:00"
-            textFieldEdit(dinner!)
-        case 3:             //Doors tag = 103
-            timeForTimeWheel = "18:00"
-            textFieldEdit(doors!)
-        case 4:             //Music Curfew tag = 104
-            timeForTimeWheel = "23:00"
-            textFieldEdit(musicCurfew!)
-        case 5:             //Venue Curfew tag = 105
-            timeForTimeWheel = "00:00"
-            textFieldEdit(venueCurfew!)
-        case 6:             //How many performers tag = 106
+        case 1:             //How many performers tag = 101
             textFieldEdit(howManyPerformers!)
+        case 2:             //Get-in tag = 102
+            timeForTimeWheel = "15:00"
+            textFieldEdit(getIn!)
+        case 3:             //Dinner tag = 103
+            timeForTimeWheel = "18:00"
+            textFieldEdit(dinner!)
+        case 4:             //Doors tag = 104
+            timeForTimeWheel = "19:00"
+            textFieldEdit(doors!)
+        case 5:             //Music Curfew tag = 105
+            timeForTimeWheel = "22:00"
+            textFieldEdit(musicCurfew!)
+        case 6:             //Venue Curfew tag = 106
+            timeForTimeWheel = "01:00"
+            textFieldEdit(venueCurfew!)
+        
         default:
             print("Default")
         }
@@ -100,24 +102,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         eventTableView.deselectRow(at: indexPath, animated: true)
     }
     
-    //  Methods --> Going thru all cells and make the inputview active
-    func initInputViewsForUITextFields() {
-        let visiblesCells = eventTableView.visibleCells
-        for cell in visiblesCells {
-            let path = eventTableView.indexPath(for: cell)
-            tableView(eventTableView, didSelectRowAt: path!)
-        }
-    }
+//    //  Methods --> Going thru all cells and make the inputview active
+//    func initInputViewsForUITextFields() {
+//        let visiblesCells = eventTableView.visibleCells
+//        for cell in visiblesCells {
+//            let path = eventTableView.indexPath(for: cell)
+//            tableView(eventTableView, didSelectRowAt: path!)
+//        }
+//    }
     
     //  Methods --> Button becomes visable
     func shouldNextButtonDisplay (anyInputFieldIsEmpty: Bool) {
         if anyInputFieldIsEmpty {
-        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
-        eventNavBar.rightBarButtonItem = doneButtonItem
+            let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
+            eventNavBar.rightBarButtonItem = doneButtonItem
         }
     }
     
     @objc func doneButtonFunc() {
+        for textField in self.view.subviews where textField is UITextField {
+            textField.resignFirstResponder()
+        }
         self.performSegue(withIdentifier: "toAddPerformers", sender: nil)
     }
     
@@ -126,22 +131,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
         if sender.tag == 100 {
             datePickerEdit(sender)
-        } else if sender.tag >= 101 && sender.tag <= 105{
-            timePickerEdit(sender)
-        } else if sender.tag == 106 {
+        } else if sender.tag == 101 {
             numPadEdit(sender)
+        } else if sender.tag >= 102 && sender.tag <= 106{
+            timePickerEdit(sender)
         }
     }
     
     //  Methods --> Set a variable to a Tag
     func setTagToName() {
         date = self.view.viewWithTag(100) as? UITextField
-        getIn = self.view.viewWithTag(101) as? UITextField
-        dinner = self.view.viewWithTag(102) as? UITextField
-        doors = self.view.viewWithTag(103) as? UITextField
-        musicCurfew = self.view.viewWithTag(104) as? UITextField
-        venueCurfew = self.view.viewWithTag(105) as? UITextField
-        howManyPerformers = self.view.viewWithTag(106) as? UITextField
+        howManyPerformers = self.view.viewWithTag(101) as? UITextField
+        getIn = self.view.viewWithTag(102) as? UITextField
+        dinner = self.view.viewWithTag(103) as? UITextField
+        doors = self.view.viewWithTag(104) as? UITextField
+        musicCurfew = self.view.viewWithTag(105) as? UITextField
+        venueCurfew = self.view.viewWithTag(106) as? UITextField
     }
     
     //  Methods --> Construting DatePicker
@@ -162,7 +167,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func datePickerLoad() -> UIDatePicker{
         let datePicker = UIDatePicker()
+        let formatter = DateFormatter()
+        formatter.dateStyle = DateFormatter.Style.short
+        formatter.timeStyle = DateFormatter.Style.none
         datePicker.datePickerMode = UIDatePickerMode.date
+        let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
+        textField.text = formatter.string(from: datePicker.date)
         return datePicker
     }
     
@@ -184,9 +194,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func timePickerLoad() -> UIDatePicker{
         let timePicker = UIDatePicker()
+        let formatter = DateFormatter()
+        formatter.dateStyle = DateFormatter.Style.none
+        formatter.timeStyle = DateFormatter.Style.short
         timePicker.datePickerMode = UIDatePickerMode.time
         timePicker.minuteInterval = 5
         timePicker.setDate(dateSet(testDate: timeForTimeWheel!), animated: true)
+        let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
+        textField.text = formatter.string(from: timePicker.date)
+        
         return timePicker
     }
     

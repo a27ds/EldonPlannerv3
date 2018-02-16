@@ -43,23 +43,23 @@ class Performence {
         self.rigDownTimeInt = Int(rigDownTime.dropLast(4))!
         self.lineUpPlacementInt = Int(lineUpPlacement)!
         self.howManyPerformers = howManyPerformers
-//        totalShowTimeInMinForPerformers()
+        //        totalShowTimeInMinForPerformers()
     }
     
     func getPerformerValue() -> Array<String> {
         let performerArray = [performenceName, soundcheckTime, rigUpTime, showTime, rigDownTime]
         return performerArray
     }
-//    func totalShowTimeInMinForPerformers() {
-//        if lineUpPlacementInt == 1 { //First performer
-//            performerTotalTimeInMin = showTimeInt + rigDownTimeInt
-//            print(performerTotalTimeInMin)
-//        } else if lineUpPlacementInt == howManyPerformers { // Last performer
-//            performerTotalTimeInMin = rigUpTimeInt + showTimeInt
-//            print(performerTotalTimeInMin)
-//        } else { //in the middle performers
-//            performerTotalTimeInMin = rigUpTimeInt + showTimeInt + rigDownTimeInt
-//            print(performerTotalTimeInMin)
-//        }
-//    }
+    //    func totalShowTimeInMinForPerformers() {
+    //        if lineUpPlacementInt == 1 { //First performer
+    //            performerTotalTimeInMin = showTimeInt + rigDownTimeInt
+    //            print(performerTotalTimeInMin)
+    //        } else if lineUpPlacementInt == howManyPerformers { // Last performer
+    //            performerTotalTimeInMin = rigUpTimeInt + showTimeInt
+    //            print(performerTotalTimeInMin)
+    //        } else { //in the middle performers
+    //            performerTotalTimeInMin = rigUpTimeInt + showTimeInt + rigDownTimeInt
+    //            print(performerTotalTimeInMin)
+    //        }
+    //    }
 }

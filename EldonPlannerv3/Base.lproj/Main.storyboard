@@ -204,13 +204,25 @@
                                     <navigationItem title="Event Info" id="PFe-RB-hPc"/>
                                 </items>
                             </navigationBar>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="XaR-9O-Ke1">
-                                <rect key="frame" x="16" y="89" width="343" height="503"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Fo-23-YP7">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="XaR-9O-Ke1">
+                                        <rect key="frame" x="16" y="50" width="343" height="503"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="XaR-9O-Ke1" secondAttribute="bottom" constant="50" id="JNP-Sk-rpg"/>
+                                    <constraint firstItem="XaR-9O-Ke1" firstAttribute="leading" secondItem="9Fo-23-YP7" secondAttribute="leading" constant="16" id="L9U-hs-58M"/>
+                                    <constraint firstItem="XaR-9O-Ke1" firstAttribute="top" secondItem="9Fo-23-YP7" secondAttribute="top" constant="50" id="iWh-bx-V6H"/>
+                                    <constraint firstAttribute="trailing" secondItem="XaR-9O-Ke1" secondAttribute="trailing" constant="16" id="tVC-18-Bsa"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ssz-fJ-Fan">
                                 <rect key="frame" x="0.0" y="65" width="150" height="602"/>
                                 <subviews>
@@ -259,16 +271,16 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="XaR-9O-Ke1" firstAttribute="leading" secondItem="YAz-ib-LJs" secondAttribute="leading" constant="16" id="7YS-Pq-k3C"/>
+                            <constraint firstItem="YAz-ib-LJs" firstAttribute="bottom" secondItem="9Fo-23-YP7" secondAttribute="bottom" id="0MY-bg-gVy"/>
+                            <constraint firstItem="9Fo-23-YP7" firstAttribute="top" secondItem="qFT-h5-2iK" secondAttribute="bottom" id="2fg-Ex-fYp"/>
                             <constraint firstItem="Iet-fQ-Col" firstAttribute="leading" secondItem="YAz-ib-LJs" secondAttribute="leading" id="8Cj-mV-KGB"/>
                             <constraint firstItem="Ssz-fJ-Fan" firstAttribute="bottom" secondItem="YAz-ib-LJs" secondAttribute="bottom" id="DdG-pl-6a0"/>
+                            <constraint firstItem="YAz-ib-LJs" firstAttribute="trailing" secondItem="9Fo-23-YP7" secondAttribute="trailing" id="Iji-hG-U9f"/>
                             <constraint firstItem="Ssz-fJ-Fan" firstAttribute="top" secondItem="qFT-h5-2iK" secondAttribute="bottom" constant="1" id="Otw-2V-sT9"/>
                             <constraint firstItem="Iet-fQ-Col" firstAttribute="top" secondItem="lCu-Gj-TSQ" secondAttribute="top" id="PbZ-dq-XUw"/>
+                            <constraint firstItem="9Fo-23-YP7" firstAttribute="leading" secondItem="YAz-ib-LJs" secondAttribute="leading" id="RQI-Ap-sLh"/>
                             <constraint firstItem="Iet-fQ-Col" firstAttribute="trailing" secondItem="YAz-ib-LJs" secondAttribute="trailing" id="RSF-MU-IrY"/>
-                            <constraint firstItem="YAz-ib-LJs" firstAttribute="trailing" secondItem="XaR-9O-Ke1" secondAttribute="trailing" constant="16" id="ZeU-QR-iic"/>
-                            <constraint firstItem="YAz-ib-LJs" firstAttribute="bottom" secondItem="XaR-9O-Ke1" secondAttribute="bottom" constant="75" id="cGo-8f-PBy"/>
                             <constraint firstItem="Ssz-fJ-Fan" firstAttribute="leading" secondItem="YAz-ib-LJs" secondAttribute="leading" id="lLn-BN-XrR"/>
-                            <constraint firstItem="XaR-9O-Ke1" firstAttribute="top" secondItem="qFT-h5-2iK" secondAttribute="bottom" constant="25" id="nXk-N2-hOT"/>
                             <constraint firstItem="qFT-h5-2iK" firstAttribute="leading" secondItem="YAz-ib-LJs" secondAttribute="leading" id="q8C-D5-O21"/>
                             <constraint firstItem="qFT-h5-2iK" firstAttribute="top" secondItem="Iet-fQ-Col" secondAttribute="bottom" id="rBu-C3-hxI"/>
                             <constraint firstItem="qFT-h5-2iK" firstAttribute="trailing" secondItem="YAz-ib-LJs" secondAttribute="trailing" id="yJ9-0j-Q1e"/>
@@ -277,6 +289,7 @@
                     </view>
                     <connections>
                         <outlet property="eventInfo" destination="XaR-9O-Ke1" id="eqW-oa-2jj"/>
+                        <outlet property="eventInfoBackground" destination="9Fo-23-YP7" id="sWm-3a-5NK"/>
                         <outlet property="eventNavBar" destination="PFe-RB-hPc" id="OmN-Og-kSo"/>
                         <outlet property="eventSideMenuConstraint" destination="lLn-BN-XrR" id="qvq-xy-TiW"/>
                         <outlet property="eventSideMenuTableView" destination="Hk5-U6-N2c" id="ncr-CS-bEe"/>
@@ -289,7 +302,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="2lL-r8-cmP"/>
         <segue reference="Fse-Yg-oMf"/>
     </inferredMetricsTieBreakers>
 </document>

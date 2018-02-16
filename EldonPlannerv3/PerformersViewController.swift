@@ -45,10 +45,14 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var whatPerformerWillLoad: Any?
     var isEditMode: Bool = false
     
+    var counter = 0
+    
+    
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        //                testRun()
+//        testRun()
+        
         performersTableView.delegate = self
         performersTableView.dataSource = self
         performersTableView.alwaysBounceVertical = false
@@ -59,7 +63,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         appendLineUpPlacementData()
         showTimeEveryFiveMinInTotal()
         soundcheckTimeEveryFiveMinInTotal()
-        //        initInputViewsForUITextFields()
+//        initInputViewsForUITextFields()
     }
     
     //Helpers --> Checks if any UITextfield did end it's editing, and then runs shouldNextButtonDisplay
@@ -70,11 +74,11 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
+        
         if isEditMode {
             editMode()
-        } else {
-            print("ej i edit mode")
         }
+        
     }
     
     @objc func textFieldEndEdit() {
@@ -128,14 +132,21 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    //    //Methods --> Going thru all cells and make the inputview active
-    //    func initInputViewsForUITextFields() {
-    //        let visiblesCells = performersTableView.visibleCells
-    //        for cell in visiblesCells {
-    //            let path = performersTableView.indexPath(for: cell)
-    //            tableView(performersTableView, didSelectRowAt: path!)
-    //        }
-    //    }
+//    //Get the weekday name se om det funkar att göra!
+//    func getWeekdayName() {
+//        let formater = DateFormatter()
+//        
+//        
+//    }
+    
+//    //Methods --> Going thru all cells and make the inputview active
+//    func initInputViewsForUITextFields() {
+//        let visiblesCells = performersTableView.visibleCells
+//        for cell in visiblesCells {
+//            let path = performersTableView.indexPath(for: cell)
+//            tableView(performersTableView, didSelectRowAt: path!)
+//        }
+//    }
     
     // Methods --> Append Line up data
     func appendLineUpPlacementData() {
@@ -238,7 +249,15 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         countDownTimer.tag = 1
         countDownTimer.delegate = self
         countDownTimer.dataSource = self
-        countDownTimer.selectRow(5, inComponent: 0, animated: true) // väljer vart man vill börja i countDownTimer
+        
+        if sender.tag == 202 || sender.tag == 204 {
+            countDownTimer.selectRow(2, inComponent: 0, animated: true) // väljer vart man vill börja i countDownTimer
+            pickerView(countDownTimer, didSelectRow: 2, inComponent: 0)
+        } else {
+            countDownTimer.selectRow(11, inComponent: 0, animated: true) // väljer vart man vill börja i countDownTimer
+            pickerView(countDownTimer, didSelectRow: 11, inComponent: 0)
+        }
+        
         sender.inputView = countDownTimer
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
@@ -248,8 +267,8 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         soundcheckTimer.tag = 2
         soundcheckTimer.delegate = self
         soundcheckTimer.dataSource = self
-        soundcheckTimer.selectRow(5, inComponent: 0, animated: true) // väljer vart man vill börja i soundcheckTimer
-        pickerView(soundcheckTimer, didSelectRow: 5, inComponent: 0)
+        soundcheckTimer.selectRow(11, inComponent: 0, animated: true) // väljer vart man vill börja i soundcheckTimer
+        pickerView(soundcheckTimer, didSelectRow: 11, inComponent: 0)
         sender.inputView = soundcheckTimer
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
@@ -395,7 +414,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         lineUpPlacement = self.view.viewWithTag(205) as? UITextField
     }
     
-    var counter = 0
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "performersCell") as! PerformersTableViewCell
         cell.performersCellLabel.text = performersInfoNames[indexPath.row]
@@ -439,6 +458,11 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
         if pickerView.tag == 1 {
             textField.text = showTimePickerData[row]
+//            guard showTimePickerData.count <= 1 else {
+//                print(showTimePickerData)
+//                textField.text = showTimePickerData[row]  // kolla med david hur man skulle kunna göra detta på ett bra sätt!
+//                return
+//            }
         } else if pickerView.tag == 2 {
             textField.text = soundcheckTimePickerData[row]
         } else if pickerView.tag == 3 {
