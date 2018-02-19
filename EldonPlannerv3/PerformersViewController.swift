@@ -94,6 +94,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func nameEndEdit() {
         textFieldEndEdit()
+        print("name")
     }
     @objc func soundcheckEndEdit() {
         textFieldEndEdit()
@@ -101,7 +102,9 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
             event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(sender: (soundcheckTime!), timeTotalMin: (event?.soundcheckTimeTotalInMin)!)
             soundcheckEdit = true
+            print("soundcheck")
             return
+            
         }
     }
     @objc func rigUpEndEdit() {
@@ -110,8 +113,12 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
             event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
             rigUpEdit = true
+            showTimeLeftUpdate()
+            print("Rigup")
             return
+            
         }
+        
     }
     @objc func showEndEdit() {
         textFieldEndEdit()
@@ -119,8 +126,12 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             showTimeSave = Int((showTime!.text!).dropLast(4))!
             event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
             showTimeEdit = true
+            showTimeLeftUpdate()
+            print("showtime")
             return
+            
         }
+        
     }
     @objc func rigDownEndEdit() {
         textFieldEndEdit()
@@ -128,11 +139,14 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
             event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
             rigDownEdit = true
+            showTimeLeftUpdate()
+            print("rigDown")
             return
         }
     }
     @objc func lineUpPlacementEndEdit() {
         textFieldEndEdit()
+        print("lineup")
     }
     
     func textFieldEndEdit() {
@@ -146,6 +160,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     func showTimeLeftUpdate() {
+        print(event!.showTimeTotalInMin)
         showtimeLeft.text = "Showtime left: \(event!.showTimeTotalInMin) min"
     }
     
@@ -475,7 +490,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func lowInMinAlert() {
-        let alert = UIAlertController(title: "Under 60 min left" , message: "Are you sure, that you want to continue? You have under 60 min left on the total show time", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Under 60 min left" , message: "Are you sure, that you want to continue? You have under 60 min left on the total showtime", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
             self.addButtonAfterCheck()
