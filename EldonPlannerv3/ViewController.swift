@@ -35,7 +35,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-//        initInputViewsForUITextFields()
         eventTableView.delegate = self
         eventTableView.dataSource = self
         eventTableView.alwaysBounceVertical = false
@@ -43,7 +42,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         eventTableView.rowHeight = 44.0
         eventTableView.backgroundView = UIView()
         eventTableView.backgroundView?.addGestureRecognizer(tap)
-        
+    }
+    
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
     //  IBActions
@@ -102,19 +104,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         eventTableView.deselectRow(at: indexPath, animated: true)
     }
     
-//    //  Methods --> Going thru all cells and make the inputview active
-//    func initInputViewsForUITextFields() {
-//        let visiblesCells = eventTableView.visibleCells
-//        for cell in visiblesCells {
-//            let path = eventTableView.indexPath(for: cell)
-//            tableView(eventTableView, didSelectRowAt: path!)
-//        }
-//    }
-    
     //  Methods --> Button becomes visable
     func shouldNextButtonDisplay (anyInputFieldIsEmpty: Bool) {
         if anyInputFieldIsEmpty {
             let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
+            doneButtonItem.tintColor = .red
             eventNavBar.rightBarButtonItem = doneButtonItem
         }
     }
@@ -150,6 +144,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  Methods --> Construting DatePicker
     func datePickerEdit(_ sender: UITextField) {
         let datePicker = datePickerLoad()
+        datePicker.backgroundColor = .black
+        datePicker.setValue(UIColor.red, forKey:"textColor")
         sender.inputView = datePicker
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControlEvents.valueChanged)
@@ -177,6 +173,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  Methods --> Construting TimePicker
     func timePickerEdit(_ sender: UITextField) {
         let timePicker = timePickerLoad()
+        timePicker.backgroundColor = .black
+        timePicker.setValue(UIColor.red, forKey: "textColor")
         sender.inputView = timePicker
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
         timePicker.addTarget(self, action: #selector(timePickerValueChangedStart(sender:)), for: UIControlEvents.valueChanged)
@@ -217,6 +215,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //  Methods --> Numpad
     func numPadEdit(_ sender: UITextField) {
+        sender.keyboardAppearance = .dark
         sender.keyboardType = UIKeyboardType.numberPad
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
     }
@@ -243,6 +242,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventCell") as! EventTableViewCell
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .red
+        cell.selectedBackgroundView = backgroundView
         cell.eventCellLabel.text = eventInfoNames[indexPath.row]
         cell.eventCellTextField.tag = indexPath.row + 100
         setTagToName()
@@ -250,7 +252,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     //Helpers --> Checks if any UITextfield did end it's editing, and then Display a done button in navbar
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: date)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: getIn)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: dinner)

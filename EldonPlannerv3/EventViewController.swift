@@ -27,7 +27,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        testRun()
+//                testRun()
         getInCopy = (event?.getIn)!
         musicCurfewCopy = (event?.musicCurfew)!
         eventInfo.text = eventInfoText()
@@ -39,11 +39,17 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         eventSideMenuTableView.tableFooterView = UIView()
     }
     
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
+    
     //  Methods --> Button becomes visable
     func makeButtons () {
         let copyButtonItem = UIBarButtonItem(title: "Copy", style: .plain, target: self, action: #selector(self.copyButtonFunc))
+        copyButtonItem.tintColor = .red
         eventNavBar.rightBarButtonItem = copyButtonItem
         let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(self.editButtonFunc))
+        editButton.tintColor = .red
         eventNavBar.leftBarButtonItem = editButton
     }
     
@@ -56,7 +62,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func blurTextView(isOn: Bool) {
-        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffect = UIBlurEffect(style: .dark)
         let blurView = UIVisualEffectView(effect: blurEffect)
         if isOn {
             print("true")
@@ -103,7 +109,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func showActionSheet() {
         var test : UIAlertAction
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
+        actionSheet.view.tintColor = .red
         let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         for performer in (event?.performers)! {
             test = UIAlertAction(title: performer.performenceName, style: .default) { action in
@@ -216,6 +222,9 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "eventInfoSideMenuCell") as! EventInfoSideMenuTableViewCell
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .red
+        cell.selectedBackgroundView = backgroundView
         cell.eventInfoSideMenuCellLabel.text = event?.performers[indexPath.row].performenceName
         return cell
     }
@@ -240,7 +249,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         event?.performers.append(Performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
-        //        event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
-        //        event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "5", howManyPerformers: (event?.howManyPerformers)!))
+//                event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
+//                event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "5", howManyPerformers: (event?.howManyPerformers)!))
     }
 }
