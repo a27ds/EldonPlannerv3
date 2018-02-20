@@ -16,6 +16,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var eventNavBar: UINavigationItem!
     @IBOutlet weak var eventSideMenuConstraint: NSLayoutConstraint!
     @IBOutlet weak var eventSideMenuTableView: UITableView!
+    @IBOutlet weak var sideBar: UIView!
     
     //  Variabels
     var event: Event? = nil
@@ -30,11 +31,33 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-//                testRun()
+        //                testRun()
         getInCopy = (event?.getIn)!
         musicCurfewCopy = (event?.musicCurfew)!
         eventInfo.text = eventInfoText()
         makeButtons()
+        eventSideMenuTableViewSet()
+    }
+    
+    //  Segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editPerformers" {
+            let destVC = segue.destination as! PerformersViewController
+            destVC.whatPerformerWillLoad = sender
+            destVC.event = event
+            destVC.isEditMode = true
+        } else if segue.identifier == "backToTheRoots" {
+        }
+    }
+    
+    //  Method --> Makes the statusbar light colored
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
+    
+    //  Methods --> Tableview
+    func eventSideMenuTableViewSet() {
+        sideBar.isHidden = true
         setSideMenuConstraint(value: -150)
         eventSideMenuTableView.delegate = self
         eventSideMenuTableView.dataSource = self
@@ -42,11 +65,17 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         eventSideMenuTableView.tableFooterView = UIView()
     }
     
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return UIStatusBarStyle.lightContent
+    //  Methods --> Select Tableview cell
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "editPerformers", sender: indexPath.row)
     }
     
-    //  Methods --> Button becomes visable
+    //  Methods --> As the Method name says... ;)
+    func setSideMenuConstraint(value: CGFloat) {
+        eventSideMenuConstraint.constant = value
+    }
+    
+    //  Methods --> Buttons
     func makeButtons () {
         let copyButtonItem = UIBarButtonItem(title: "Copy", style: .plain, target: self, action: #selector(self.copyButtonFunc))
         copyButtonItem.tintColor = .red
@@ -60,35 +89,13 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         UIPasteboard.general.string = eventInfo.text
     }
     
-    func setSideMenuConstraint(value: CGFloat) {
-        eventSideMenuConstraint.constant = value
-    }
-    
-    func blurTextView(isOn: Bool) {
-        let blurEffect = UIBlurEffect(style: .dark)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        if isOn {
-            UIView.animate(withDuration: 0.4, animations: {
-                blurView.frame = self.eventInfoBackground.bounds
-                self.eventInfoBackground.addSubview(blurView)
-            })
-        } else {
-            UIView.animate(withDuration: 0.4, animations: {
-                for subview in self.eventInfoBackground.subviews {
-                    if subview is UIVisualEffectView {
-                        subview.removeFromSuperview()
-                    }
-                }
-            })
-        }
-    }
-    
     @objc func editButtonFunc() {
         event?.performers.sort(by: { Int($0.lineUpPlacement)! < Int($1.lineUpPlacement)! }) //Sortera performers
         if event!.howManyPerformers <= 4 {
             showActionSheet()
         } else {
             if sideMenuIsHidden {
+                sideBar.isHidden = false
                 blurTextView(isOn: true)
                 setSideMenuConstraint(value: 0)
                 UIView.animate(withDuration: 0.3, animations: {
@@ -105,7 +112,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    //  ActionSheet
+    //  Methods --> Create ActionSheet
     func showActionSheet() {
         var actionSheetAction : UIAlertAction
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -119,19 +126,6 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
         actionSheet.addAction(cancel)
         present(actionSheet, animated: true, completion: nil)
-    }
-    
-    func startoverAlert() {
-        let alert = UIAlertController(title: "Do you want to startover?" , message: """
-        Are you really sure?
-        This action will reset everything you've done!
-        """, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-        alert.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: { action in
-            self.performSegue(withIdentifier: "backToTheRoots", sender: nil)
-        }))
-        alert.view.tintColor = UIColor.black
-        self.present(alert, animated: true)
     }
     
     //  Methods --> Create Event Info
@@ -188,19 +182,6 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return showInfo
     }
     
-    func getChangeOverTimeInt(performer: Performence) -> Int{
-        var index = -1
-        var changeOver = 0
-        for performer in event!.performers {
-            index = index + 1
-            if performer.lineUpPlacementInt != 1 {
-                changeOver = performer.rigUpTimeInt + (event?.performers[index+1].rigDownTimeInt)!
-                performer.changeOverTimeInt = changeOver
-            }
-        }
-        return changeOver
-    }
-    
     //  Methods --> Time conversion
     func fromGetInToDinner(performerTimeInMin: Int, from: String) -> String {
         let formatter = DateFormatter()
@@ -228,6 +209,53 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return (minutes / 60, (minutes % 60))
     }
     
+    func getChangeOverTimeInt(performer: Performence) -> Int{
+        var index = -1
+        var changeOver = 0
+        for performer in event!.performers {
+            index = index + 1
+            if performer.lineUpPlacementInt != 1 {
+                changeOver = performer.rigUpTimeInt + (event?.performers[index+1].rigDownTimeInt)!
+                performer.changeOverTimeInt = changeOver
+            }
+        }
+        return changeOver
+    }
+    
+    //  Methods --> Creates a blur effect to dim eventinfo when the sidemenu comes in
+    func blurTextView(isOn: Bool) {
+        let blurEffect = UIBlurEffect(style: .dark)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        if isOn {
+            UIView.animate(withDuration: 0.4, animations: {
+                blurView.frame = self.eventInfoBackground.bounds
+                self.eventInfoBackground.addSubview(blurView)
+            })
+        } else {
+            UIView.animate(withDuration: 0.4, animations: {
+                for subview in self.eventInfoBackground.subviews {
+                    if subview is UIVisualEffectView {
+                        subview.removeFromSuperview()
+                    }
+                }
+            })
+        }
+    }
+    
+    //  Methods --> Alert
+    func startoverAlert() {
+        let alert = UIAlertController(title: "Do you want to startover?" , message: """
+        Are you really sure?
+        This action will reset everything you've done!
+        """, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: { action in
+            self.performSegue(withIdentifier: "backToTheRoots", sender: nil)
+        }))
+        alert.view.tintColor = UIColor.black
+        self.present(alert, animated: true)
+    }
+    
     //  Helpers --> Tableview
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (event?.howManyPerformers)!
@@ -242,29 +270,13 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return cell
     }
     
-    //  Methods --> Select Tableview cell
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "editPerformers", sender: indexPath.row)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "editPerformers" {
-            let destVC = segue.destination as! PerformersViewController
-            destVC.whatPerformerWillLoad = sender
-            destVC.event = event
-            destVC.isEditMode = true
-        } else if segue.identifier == "backToTheRoots" {
-            
-        }
-    }
-    
     //  Tester
     func testRun() {
         event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
         event?.performers.append(Performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))
-//                event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
-//                event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "5", howManyPerformers: (event?.howManyPerformers)!))
+        //                event?.performers.append(Performence(performenceName: "Fjärde", soundcheckTime: "30 min", rigUpTime: "4 min", showTime: "30 min", rigDownTime: "4 min", lineUpPlacement: "4", howManyPerformers: (event?.howManyPerformers)!))
+        //                event?.performers.append(Performence(performenceName: "Sista", soundcheckTime: "60 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "5", howManyPerformers: (event?.howManyPerformers)!))
     }
 }

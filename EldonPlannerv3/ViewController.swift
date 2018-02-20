@@ -18,6 +18,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  Variables
     let eventInfoNames = ["Date", "How Many Performers", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew"]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
+    var counterClick = 1
     var timeForTimeWheel: String?
     
     var event: Event? = nil
@@ -42,25 +43,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        eventTableView.delegate = self
-        eventTableView.dataSource = self
-        eventTableView.alwaysBounceVertical = false
-        eventTableView.tableFooterView = UIView()
-        eventTableView.rowHeight = 44.0
-        eventTableView.backgroundView = UIView()
-        eventTableView.backgroundView?.addGestureRecognizer(tap)
+        eventTableViewSet()
     }
     
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return UIStatusBarStyle.lightContent
+    //  ViewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        observerSet()
     }
     
-    //  IBActions
+    //  ViewWillDisappear
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    //  IBActions --> TapGestures
     @IBAction func tapAction(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
         eventTableView.deselectRow(at: cellIndexPath!, animated: true)
     }
     
+    //  IBActions --> Buttons
     @IBAction func nextButtonPressed(_ sender: UIBarButtonItem) {
         if !anyInputFieldIsEmpty() {
             alertIfAnyInputFieldIsEmpty()
@@ -77,8 +79,39 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    var counterClick = 1
+    //  Method --> Makes the statusbar light colored
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
+    
+    //  Methods --> Setting the observers to checks if any UITextfield did end it's editing, and then Display a done button in navbar
+    func observerSet() {
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: date)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: getIn)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: dinner)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: doors)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: musicCurfew)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: venueCurfew)
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: howManyPerformers)
+    }
+    
+    //  Methods --> Observer Method
+    @objc func textFieldEndEdit() {
+        shouldNextButtonDisplay(anyInputFieldIsEmpty: anyInputFieldIsEmpty())
+    }
+    
     //  Methods --> Tableview
+    func eventTableViewSet() {
+        eventTableView.delegate = self
+        eventTableView.dataSource = self
+        eventTableView.alwaysBounceVertical = false
+        eventTableView.tableFooterView = UIView()
+        eventTableView.rowHeight = 44.0
+        eventTableView.backgroundView = UIView()
+        eventTableView.backgroundView?.addGestureRecognizer(tap)
+    }
+    
+    //  Methods --> Tableview | Locks the different cells to guide the user on the right path
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if (indexPath.row >= counterClick) {
             return nil
@@ -87,6 +120,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return indexPath
     }
     
+    //  Methods --> Tableview | Detect user input on the tableview and preform actions after choice
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         cellIndexPath = indexPath
         setTagToName()
@@ -110,33 +144,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             textFieldEdit(doors!)
             setColorOnLabels(6)
         case 5:             //Music Curfew tag = 105
-            timeForTimeWheel = "22:00"
+            timeForTimeWheel = "00:00"
             textFieldEdit(musicCurfew!)
             setColorOnLabels(7)
         case 6:             //Venue Curfew tag = 106
-            timeForTimeWheel = "01:00"
+            timeForTimeWheel = "03:00"
             textFieldEdit(venueCurfew!)
         default:
-            print("Default")
+            print("This sentence should never be printed")
         }
     }
     
+    //  Methods --> Tableview | Method that runs when a cell is deselected
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         eventTableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    //  Methods --> Button becomes visable
-    func shouldNextButtonDisplay (anyInputFieldIsEmpty: Bool) {
-        if anyInputFieldIsEmpty {
-            let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
-            doneButtonItem.tintColor = .red
-            eventNavBar.rightBarButtonItem = doneButtonItem
-        }
-    }
-    
-    @objc func doneButtonFunc() {
-        view.endEditing(true)
-        self.performSegue(withIdentifier: "toAddPerformers", sender: nil)
     }
     
     //  Methods --> Textfield became active
@@ -151,6 +172,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    //  Methods --> Button becomes visible
+    func shouldNextButtonDisplay (anyInputFieldIsEmpty: Bool) {
+        if anyInputFieldIsEmpty {
+            let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonFunc))
+            doneButtonItem.tintColor = .red
+            eventNavBar.rightBarButtonItem = doneButtonItem
+        }
+    }
+    
+    @objc func doneButtonFunc() {
+        view.endEditing(true)
+        self.performSegue(withIdentifier: "toAddPerformers", sender: nil)
+    }
+    
     //  Methods --> Set a variable to a Tag
     func setTagToName() {
         date = self.view.viewWithTag(100) as? UITextField
@@ -162,11 +197,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         venueCurfew = self.view.viewWithTag(106) as? UITextField
     }
     
+    //  Methods --> Setting color to Pickers
+    func setPickerColor(sender: UIDatePicker) {
+        sender.backgroundColor = .black
+        sender.setValue(UIColor.red, forKey:"textColor")
+    }
+    
     //  Methods --> Construting DatePicker
     func datePickerEdit(_ sender: UITextField) {
         let datePicker = datePickerLoad()
-        datePicker.backgroundColor = .black
-        datePicker.setValue(UIColor.red, forKey:"textColor")
+        setPickerColor(sender: datePicker)
         sender.inputView = datePicker
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControlEvents.valueChanged)
@@ -194,8 +234,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //  Methods --> Construting TimePicker
     func timePickerEdit(_ sender: UITextField) {
         let timePicker = timePickerLoad()
-        timePicker.backgroundColor = .black
-        timePicker.setValue(UIColor.red, forKey: "textColor")
+        setPickerColor(sender: timePicker)
         sender.inputView = timePicker
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
         timePicker.addTarget(self, action: #selector(timePickerValueChangedStart(sender:)), for: UIControlEvents.valueChanged)
@@ -219,7 +258,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         timePicker.setDate(dateSet(testDate: timeForTimeWheel!), animated: true)
         let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
         textField.text = formatter.string(from: timePicker.date)
-        
         return timePicker
     }
     
@@ -271,28 +309,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cell.eventCellLabel.textColor = UIColor.gray
         cell.eventCellTextField.tag = indexPath.row + 100
         setTagToName()
-        let dateLabel = self.view.viewWithTag(300) as? UILabel
-        dateLabel?.textColor = UIColor.white
-        return cell
+        let dateLabel = self.view.viewWithTag(300) as? UILabel          //Make a UILabel from it's tag
+        dateLabel?.textColor = UIColor.white                            //Setting Text color to the UILabel to get the user to understand what to click.
+        return cell                                                     //Will continue doing this in the next method
     }
-    
+    // Methods --> Setting some color to the cells
     func setColorOnLabels(_ index: Int) {
-        
         let howManyPerformersLabel = self.view.viewWithTag(301) as? UILabel
         let getinLabel = self.view.viewWithTag(302) as? UILabel
-        let dinnerLabel = self.view.viewWithTag(303) as? UILabel
+        let dinnerLabel = self.view.viewWithTag(303) as? UILabel         //Makes UILabel's from it's tags
         let doorsLabel = self.view.viewWithTag(304) as? UILabel
         let musicCurfewLabel = self.view.viewWithTag(305) as? UILabel
         let venueCurfewLabel = self.view.viewWithTag(306) as? UILabel
-        
-        
         switch index {
         case 2:
             howManyPerformersLabel?.textColor = UIColor.white
         case 3:
             getinLabel?.textColor = UIColor.white
         case 4:
-            dinnerLabel?.textColor = UIColor.white
+            dinnerLabel?.textColor = UIColor.white                       //Setting Text color's to the UILabels to get the user to understand what to click.
         case 5:
             doorsLabel?.textColor = UIColor.white
         case 6:
@@ -300,27 +335,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         case 7:
             venueCurfewLabel?.textColor = UIColor.white
         default:
-            print("error!")
+            print("ERROR! Or is it an error?")
         }
     }
-    
-    //Helpers --> Checks if any UITextfield did end it's editing, and then Display a done button in navbar
-    override func viewDidAppear(_ animated: Bool) {
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: date)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: getIn)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: dinner)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: doors)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: musicCurfew)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: venueCurfew)
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: howManyPerformers)
-    }
-    
-    @objc func textFieldEndEdit() {
-        shouldNextButtonDisplay(anyInputFieldIsEmpty: anyInputFieldIsEmpty())
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        NotificationCenter.default.removeObserver(self)
-    }
 }
-

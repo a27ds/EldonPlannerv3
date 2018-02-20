@@ -50,135 +50,34 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var counter = 0
     var NSAttributed: NSAttributedString?
     
-    
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-//        testRun()
-        
-        performersTableView.delegate = self
-        performersTableView.dataSource = self
-        performersTableView.alwaysBounceVertical = false
-        performersTableView.tableFooterView = UIView()
-        performersTableView.rowHeight = 44.0
-        performersTableView.backgroundView = UIView()
-        performersTableView.backgroundView?.addGestureRecognizer(tap)
-//        if !isEditMode {
+        //        testRun()
+        performersTableViewSet()
         appendLineUpPlacementData()
-//        showTimeEveryFiveMinInTotal()
-//        soundcheckTimeEveryFiveMinInTotal()
-//        }
         showTimeLeftUpdate()
     }
     
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return UIStatusBarStyle.lightContent
-    }
-    
-    func observerSet() {
-        NotificationCenter.default.addObserver(self, selector: #selector(nameEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: name)
-        NotificationCenter.default.addObserver(self, selector: #selector(soundcheckEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: soundcheckTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(rigUpEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigUpTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(showEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(rigDownEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
-        NotificationCenter.default.addObserver(self, selector: #selector(lineUpPlacementEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
-    }
-    
+    //  ViewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         if isEditMode {
             editMode()
         }
     }
     
+    //  ViewDidAppear
     override func viewDidAppear(_ animated: Bool) {
         setTagToName()
         observerSet()
     }
     
-    @objc func nameEndEdit() {
-        textFieldEndEdit()
-    }
-    @objc func soundcheckEndEdit() {
-        textFieldEndEdit()
-        guard (soundcheckTime?.text?.isEmpty)! else {
-            soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
-            let soundcheckTimeTotalSave = (event?.soundcheckTimeTotalInMin)!
-            event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(timeSave: soundcheckTimeSave, timeTotalMin: soundcheckTimeTotalSave)
-            soundcheckEdit = true
-            soundcheckTimeEveryFiveMinInTotal()
-            return
-            
-        }
-    }
-    @objc func rigUpEndEdit() {
-        textFieldEndEdit()
-        guard (rigUpTime!.text?.isEmpty)! else {
-            rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-            let showTimeTotalSave = (event?.showTimeTotalInMin)!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: rigUpTimeSave, timeTotalMin: showTimeTotalSave)
-            rigUpEdit = true
-            showTimeEveryFiveMinInTotal()
-            showTimeLeftUpdate()
-            print("rigUpTimeSave: \(rigUpTimeSave)")
-            return
-            
-        }
-        
-    }
-    @objc func showEndEdit() {
-        textFieldEndEdit()
-        guard (showTime!.text?.isEmpty)! else {
-            showTimeSave = Int((showTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: showTimeSave, timeTotalMin: (event?.showTimeTotalInMin)!)
-            showTimeEdit = true
-            showTimeEveryFiveMinInTotal()
-            showTimeLeftUpdate()
-            print("showTimeSave: \(showTimeSave)")
-            return
-            
-        }
-        
-    }
-    @objc func rigDownEndEdit() {
-        textFieldEndEdit()
-        guard (rigDownTime!.text?.isEmpty)! else {
-            rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: rigDownTimeSave, timeTotalMin: (event?.showTimeTotalInMin)!)
-            rigDownEdit = true
-            showTimeEveryFiveMinInTotal()
-            showTimeLeftUpdate()
-            print("rigDownTimeSave: \(rigDownTimeSave)")
-            return
-        }
-    }
-    @objc func lineUpPlacementEndEdit() {
-        textFieldEndEdit()
-    }
-    
-    func textFieldEndEdit() {
-        showTimeLeftUpdate()
-        if !isEditMode {
-            if lineUpPlacementData.count == 1 {
-                shouldDoneButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
-            } else {
-                shouldAddButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
-            }
-        }
-    }
-    func showTimeLeftUpdate() {
-        showtimeLeft.text = "Showtime left: \(event!.showTimeTotalInMin) min"
-    }
-    
+    //  ViewWillDisappear
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func editMode() {
-        editResetTextFields()
-        makeSaveButton()
-    }
-    
-    //  IBActions
+    //  IBActions --> TapGestures
     @IBAction func tapPressed(_ sender: UITapGestureRecognizer) {
         if anyUiTextFieldTapped {
             view.endEditing(true)
@@ -197,27 +96,88 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func addPerformersInfoToPerformenceArray() {
-        view.endEditing(true)
-        performersTableView.deselectRow(at: cellIndexPath!, animated: true)
-        event?.performers.append(Performence(performenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPerformers: (event?.howManyPerformers)!))
+    //  Methods --> Makes the statusbar light colored
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
-    func removeMinFromTotalTime(timeSave: Int, timeTotalMin: Int) -> Int{
-        return timeTotalMin - timeSave
+    //  Methods --> Setting the observers
+    func observerSet() {
+        NotificationCenter.default.addObserver(self, selector: #selector(nameEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: name)
+        NotificationCenter.default.addObserver(self, selector: #selector(soundcheckEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: soundcheckTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(rigUpEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigUpTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(showEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: showTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(rigDownEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: rigDownTime)
+        NotificationCenter.default.addObserver(self, selector: #selector(lineUpPlacementEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: lineUpPlacement)
     }
     
-    func removeSelectedLineUpPlacementFromArray() {
-        if let index = lineUpPlacementData.index(of: (lineUpPlacement?.text!)!) {
-            lineUpPlacementData.remove(at: index)
+    //  Methods --> Observer Methods
+    @objc func nameEndEdit() {
+        textFieldEndEdit()
+    }
+    
+    @objc func soundcheckEndEdit() {
+        textFieldEndEdit()
+        guard (soundcheckTime?.text?.isEmpty)! else {
+            soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
+            let soundcheckTimeTotalSave = (event?.soundcheckTimeTotalInMin)!
+            event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(timeSave: soundcheckTimeSave, timeTotalMin: soundcheckTimeTotalSave)
+            soundcheckEdit = true
+            soundcheckTimeEveryFiveMinInTotal()
+            return
         }
     }
     
-    // Methods --> Append Line up data
-    func appendLineUpPlacementData() {
-        for i in 1...event!.howManyPerformers {
-            lineUpPlacementData.append("\(i)")
+    @objc func rigUpEndEdit() {
+        textFieldEndEdit()
+        guard (rigUpTime!.text?.isEmpty)! else {
+            rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
+            let showTimeTotalSave = (event?.showTimeTotalInMin)!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: rigUpTimeSave, timeTotalMin: showTimeTotalSave)
+            rigUpEdit = true
+            showTimeEveryFiveMinInTotal()
+            showTimeLeftUpdate()
+            return
         }
+    }
+    
+    @objc func showEndEdit() {
+        textFieldEndEdit()
+        guard (showTime!.text?.isEmpty)! else {
+            showTimeSave = Int((showTime!.text!).dropLast(4))!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: showTimeSave, timeTotalMin: (event?.showTimeTotalInMin)!)
+            showTimeEdit = true
+            showTimeEveryFiveMinInTotal()
+            showTimeLeftUpdate()
+            return
+        }
+    }
+    
+    @objc func rigDownEndEdit() {
+        textFieldEndEdit()
+        guard (rigDownTime!.text?.isEmpty)! else {
+            rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: rigDownTimeSave, timeTotalMin: (event?.showTimeTotalInMin)!)
+            rigDownEdit = true
+            showTimeEveryFiveMinInTotal()
+            showTimeLeftUpdate()
+            return
+        }
+    }
+    
+    @objc func lineUpPlacementEndEdit() {
+        textFieldEndEdit()
+    }
+    
+    //  Methods --> Tableview
+    func performersTableViewSet() {
+        performersTableView.delegate = self
+        performersTableView.dataSource = self
+        performersTableView.alwaysBounceVertical = false
+        performersTableView.tableFooterView = UIView()
+        performersTableView.rowHeight = 44.0
+        performersTableView.backgroundView = UIView()
+        performersTableView.backgroundView?.addGestureRecognizer(tap)
     }
     
     //  Methods --> Tableview
@@ -230,7 +190,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             textFieldEdit(name!)
         case 1:             //Soundcheck Time tag = 201
             anyUiTextFieldTapped = true
-            
             if isEditMode {
                 soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
             }
@@ -239,61 +198,46 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
                 soundcheckTimeEveryFiveMinInTotal()
             }
             textFieldEdit(soundcheckTime!)
-//            soundcheckEdit = false
             
         case 2:             //Rig Up Time tag = 202
             anyUiTextFieldTapped = true
-            
-            print("rigUpTimeSave select: \(rigUpTimeSave)")
             if isEditMode {
                 rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
             }
             if rigUpEdit || isEditMode  {
-                print("körsdenna1?")
                 event?.showTimeTotalInMin += rigUpTimeSave
                 showTimeEveryFiveMinInTotal()
             }
             textFieldEdit(rigUpTime!)
-//            rigUpEdit = false
-            
         case 3:             //Show Time tag = 203
             anyUiTextFieldTapped = true
-            
-            print("showTimeSave select: \(showTimeSave)")
             if isEditMode {
                 showTimeSave = Int((showTime!.text!).dropLast(4))!
             }
             if showTimeEdit || isEditMode  {
-                print("körsdenna2?")
                 event?.showTimeTotalInMin += showTimeSave
                 showTimeEveryFiveMinInTotal()
             }
             textFieldEdit(showTime!)
-//            showTimeEdit = false
-            
         case 4:             //Rig Down Time tag = 204
             anyUiTextFieldTapped = true
-            
-            print("rigDownTimeSave select: \(rigDownTimeSave)")
             if isEditMode {
                 rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
             }
             if rigDownEdit || isEditMode  {
-                print("körsdenna3?")
                 event?.showTimeTotalInMin += rigDownTimeSave
                 showTimeEveryFiveMinInTotal()
             }
             textFieldEdit(rigDownTime!)
-//            rigDownEdit = false
-            
         case 5:             //Line Up Placement tag = 205
             anyUiTextFieldTapped = true
             textFieldEdit(lineUpPlacement!)
         default:
-            print("Default")
+            print("If you can read this then concider yourself lucky, 84 percent can read but 775 million people still can’t read")
         }
     }
     
+    //  Methods --> When a cell are tapped on, this check will run to act as a waycrossing
     func textFieldEdit (_ sender: UITextField) {
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
         if sender.tag == 200 {
@@ -307,6 +251,63 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             countDownTimerPickerLoad(sender)
         } else if sender.tag == 205 {
             lineUpPlacementPickerLoad(sender)
+        }
+    }
+    
+    //  Methods --> Do checks if buttons should be displayed
+    func textFieldEndEdit() {
+        showTimeLeftUpdate()
+        if !isEditMode {
+            if lineUpPlacementData.count == 1 {
+                shouldDoneButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
+            } else {
+                shouldAddButtonDisplay(anyInputFieldIsEmpty: ifAnyInputFieldIsEmpty())
+            }
+        }
+    }
+    
+    //  Methods --> Update the ShowTimeLeft label
+    func showTimeLeftUpdate() {
+        showtimeLeft.text = "Showtime left: \(event!.showTimeTotalInMin) min"
+    }
+    
+    //  Methods --> This will run if user wants to edit something from the eventInfo page
+    func editMode() {
+        editResetTextFields()
+        makeSaveButton()
+    }
+    
+    //  Methods --> Appends info into performence Array
+    func addPerformersInfoToPerformenceArray() {
+        view.endEditing(true)
+        performersTableView.deselectRow(at: cellIndexPath!, animated: true)
+        event?.performers.append(Performence(performenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPerformers: (event?.howManyPerformers)!))
+    }
+    
+    //  Methods --> Remove time from total time
+    func removeMinFromTotalTime(timeSave: Int, timeTotalMin: Int) -> Int{
+        return timeTotalMin - timeSave
+    }
+    
+    //  Methods --> Creates and append the time arrays
+    func appendTimeInPickerData(runs: Int, array: inout [String]) {
+        array.removeAll()
+        for i in 1...runs {
+            array.append("\(i * 5) min")
+        }
+    }
+    
+    // Methods --> Creates and append LineUpPlacementData array
+    func appendLineUpPlacementData() {
+        for i in 1...event!.howManyPerformers {
+            lineUpPlacementData.append("\(i)")
+        }
+    }
+    
+    //  Methods --> Removes selected lineUpPlacement from lineUpPlacementdata array
+    func removeSelectedLineUpPlacementFromArray() {
+        if let index = lineUpPlacementData.index(of: (lineUpPlacement?.text!)!) {
+            lineUpPlacementData.remove(at: index)
         }
     }
     
@@ -336,7 +337,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
             countDownTimer.selectRow(0, inComponent: 0, animated: true)
             pickerView(countDownTimer, didSelectRow: 0, inComponent: 0)
         }
-        
         countDownTimer.backgroundColor = .black
         sender.inputView = countDownTimer
         sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
@@ -389,14 +389,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func appendTimeInPickerData(runs: Int, array: inout [String]) {
-        array.removeAll()
-        for i in 1...runs {
-            array.append("\(i * 5) min")
-        }
-    }
-    
-    //  Methods --> Reset all UITextFields
+    //  Methods --> Reset all UITextFields and Bools/variabels that UITextfields are using
     func resetTextFields() {
         soundcheckEdit = false
         soundcheckTimeSave = 0
@@ -414,6 +407,8 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         rigDownTime?.text = nil
         lineUpPlacement?.text = nil
     }
+    
+    //  Methods --> Reset all Bools/variabels that UITextfields are using when the app is in Edit mode
     func editResetTextFields() {
         soundcheckEdit = false
         soundcheckTimeSave = 0
@@ -485,6 +480,16 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         self.performSegue(withIdentifier: "toEventInfo", sender: nil)
     }
     
+    //  Methods --> Set a variable to a Tag
+    func setTagToName() {
+        name = self.view.viewWithTag(200) as? UITextField
+        soundcheckTime = self.view.viewWithTag(201) as? UITextField
+        rigUpTime = self.view.viewWithTag(202) as? UITextField
+        showTime = self.view.viewWithTag(203) as? UITextField
+        rigDownTime = self.view.viewWithTag(204) as? UITextField
+        lineUpPlacement = self.view.viewWithTag(205) as? UITextField
+    }
+    
     //  Methods --> Errorchecks
     func ifAnyInputFieldIsEmpty () -> Bool {
         setTagToName()
@@ -526,15 +531,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         } else {
             return count
         }
-    }
-    
-    func setTagToName() {
-        name = self.view.viewWithTag(200) as? UITextField
-        soundcheckTime = self.view.viewWithTag(201) as? UITextField
-        rigUpTime = self.view.viewWithTag(202) as? UITextField
-        showTime = self.view.viewWithTag(203) as? UITextField
-        rigDownTime = self.view.viewWithTag(204) as? UITextField
-        lineUpPlacement = self.view.viewWithTag(205) as? UITextField
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

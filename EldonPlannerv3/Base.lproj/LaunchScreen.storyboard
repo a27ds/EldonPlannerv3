@@ -17,13 +17,27 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="EPicon" translatesAutoresizingMaskIntoConstraints="NO" id="Mij-MA-KDd">
+                                <rect key="frame" x="24" y="120" width="327" height="447"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Mij-MA-KDd" secondAttribute="trailing" constant="24" id="KcC-FK-7hS"/>
+                            <constraint firstItem="Mij-MA-KDd" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="100" id="UYO-By-NdL"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Mij-MA-KDd" secondAttribute="bottom" constant="100" id="aah-rM-nQE"/>
+                            <constraint firstItem="Mij-MA-KDd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="24" id="pt7-Ib-WTr"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="EPicon" width="1024" height="1024"/>
+    </resources>
 </document>

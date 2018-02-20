@@ -362,6 +362,7 @@
                         <outlet property="eventNavBar" destination="PFe-RB-hPc" id="OmN-Og-kSo"/>
                         <outlet property="eventSideMenuConstraint" destination="WMQ-9t-HHl" id="RPD-jJ-ma8"/>
                         <outlet property="eventSideMenuTableView" destination="Hk5-U6-N2c" id="ncr-CS-bEe"/>
+                        <outlet property="sideBar" destination="Ssz-fJ-Fan" id="y4f-eo-Fvq"/>
                         <segue destination="1Nk-NO-m3p" kind="showDetail" identifier="editPerformers" id="Fse-Yg-oMf"/>
                         <segue destination="BYZ-38-t0r" kind="presentation" identifier="backToTheRoots" modalTransitionStyle="crossDissolve" id="wn9-21-h8u"/>
                     </connections>
