@@ -32,6 +32,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     var cellIndexPath: IndexPath? = nil
     
+    var dateEdit: Bool = false
+    var howManyPerformersEdit: Bool = false
+    var getInEdit: Bool = false
+    var doorsEdit: Bool = false
+    var musicCurfewEdit: Bool = false
+    var venueCurfewEdit: Bool = false
+    
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,31 +77,45 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    var counterClick = 1
     //  Methods --> Tableview
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if (indexPath.row >= counterClick) {
+            return nil
+        }
+        counterClick += 1
+        return indexPath
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         cellIndexPath = indexPath
         setTagToName()
         switch indexPath.row {
         case 0:             //Date tag = 100
             textFieldEdit(date!)
+            setColorOnLabels(2)
         case 1:             //How many performers tag = 101
             textFieldEdit(howManyPerformers!)
+            setColorOnLabels(3)
         case 2:             //Get-in tag = 102
             timeForTimeWheel = "15:00"
             textFieldEdit(getIn!)
+            setColorOnLabels(4)
         case 3:             //Dinner tag = 103
             timeForTimeWheel = "18:00"
             textFieldEdit(dinner!)
+            setColorOnLabels(5)
         case 4:             //Doors tag = 104
             timeForTimeWheel = "19:00"
             textFieldEdit(doors!)
+            setColorOnLabels(6)
         case 5:             //Music Curfew tag = 105
             timeForTimeWheel = "22:00"
             textFieldEdit(musicCurfew!)
+            setColorOnLabels(7)
         case 6:             //Venue Curfew tag = 106
             timeForTimeWheel = "01:00"
             textFieldEdit(venueCurfew!)
-        
         default:
             print("Default")
         }
@@ -246,9 +267,41 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         backgroundView.backgroundColor = .red
         cell.selectedBackgroundView = backgroundView
         cell.eventCellLabel.text = eventInfoNames[indexPath.row]
+        cell.eventCellLabel.tag = indexPath.row + 300
+        cell.eventCellLabel.textColor = UIColor.gray
         cell.eventCellTextField.tag = indexPath.row + 100
         setTagToName()
+        let dateLabel = self.view.viewWithTag(300) as? UILabel
+        dateLabel?.textColor = UIColor.white
         return cell
+    }
+    
+    func setColorOnLabels(_ index: Int) {
+        
+        let howManyPerformersLabel = self.view.viewWithTag(301) as? UILabel
+        let getinLabel = self.view.viewWithTag(302) as? UILabel
+        let dinnerLabel = self.view.viewWithTag(303) as? UILabel
+        let doorsLabel = self.view.viewWithTag(304) as? UILabel
+        let musicCurfewLabel = self.view.viewWithTag(305) as? UILabel
+        let venueCurfewLabel = self.view.viewWithTag(306) as? UILabel
+        
+        
+        switch index {
+        case 2:
+            howManyPerformersLabel?.textColor = UIColor.white
+        case 3:
+            getinLabel?.textColor = UIColor.white
+        case 4:
+            dinnerLabel?.textColor = UIColor.white
+        case 5:
+            doorsLabel?.textColor = UIColor.white
+        case 6:
+            musicCurfewLabel?.textColor = UIColor.white
+        case 7:
+            venueCurfewLabel?.textColor = UIColor.white
+        default:
+            print("error!")
+        }
     }
     
     //Helpers --> Checks if any UITextfield did end it's editing, and then Display a done button in navbar

@@ -17,12 +17,15 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet weak var eventSideMenuConstraint: NSLayoutConstraint!
     @IBOutlet weak var eventSideMenuTableView: UITableView!
     
-    
     //  Variabels
     var event: Event? = nil
     var getInCopy: String = ""
     var musicCurfewCopy: String = ""
     var sideMenuIsHidden = true
+    
+    @IBAction func startoverPressed(_ sender: UIButton) {
+        startoverAlert()
+    }
     
     // ViewDidLoad
     override func viewDidLoad() {
@@ -65,17 +68,14 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let blurEffect = UIBlurEffect(style: .dark)
         let blurView = UIVisualEffectView(effect: blurEffect)
         if isOn {
-            print("true")
             UIView.animate(withDuration: 0.4, animations: {
                 blurView.frame = self.eventInfoBackground.bounds
                 self.eventInfoBackground.addSubview(blurView)
             })
         } else {
-            print("false")
             UIView.animate(withDuration: 0.4, animations: {
                 for subview in self.eventInfoBackground.subviews {
                     if subview is UIVisualEffectView {
-                        print("körs denna")
                         subview.removeFromSuperview()
                     }
                 }
@@ -107,18 +107,31 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     //  ActionSheet
     func showActionSheet() {
-        var test : UIAlertAction
+        var actionSheetAction : UIAlertAction
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .red
         let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         for performer in (event?.performers)! {
-            test = UIAlertAction(title: performer.performenceName, style: .default) { action in
+            actionSheetAction = UIAlertAction(title: performer.performenceName, style: .default) { action in
                 self.performSegue(withIdentifier: "editPerformers", sender: performer.lineUpPlacementInt-1)
             }
-            actionSheet.addAction(test)
+            actionSheet.addAction(actionSheetAction)
         }
         actionSheet.addAction(cancel)
         present(actionSheet, animated: true, completion: nil)
+    }
+    
+    func startoverAlert() {
+        let alert = UIAlertController(title: "Do you want to startover?" , message: """
+        Are you really sure?
+        This action will reset everything you've done!
+        """, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: { action in
+            self.performSegue(withIdentifier: "backToTheRoots", sender: nil)
+        }))
+        alert.view.tintColor = UIColor.black
+        self.present(alert, animated: true)
     }
     
     //  Methods --> Create Event Info
@@ -240,6 +253,8 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
             destVC.whatPerformerWillLoad = sender
             destVC.event = event
             destVC.isEditMode = true
+        } else if segue.identifier == "backToTheRoots" {
+            
         }
     }
     

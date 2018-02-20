@@ -45,6 +45,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     var cellIndexPath: IndexPath? = nil
     var whatPerformerWillLoad: Any?
     var isEditMode: Bool = false
+    var anyUiTextFieldTapped: Bool = false
     
     var counter = 0
     var NSAttributed: NSAttributedString?
@@ -53,7 +54,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     //  ViewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-        testRun()
+//        testRun()
         
         performersTableView.delegate = self
         performersTableView.dataSource = self
@@ -62,9 +63,11 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         performersTableView.rowHeight = 44.0
         performersTableView.backgroundView = UIView()
         performersTableView.backgroundView?.addGestureRecognizer(tap)
+//        if !isEditMode {
         appendLineUpPlacementData()
-        showTimeEveryFiveMinInTotal()
-        soundcheckTimeEveryFiveMinInTotal()
+//        showTimeEveryFiveMinInTotal()
+//        soundcheckTimeEveryFiveMinInTotal()
+//        }
         showTimeLeftUpdate()
     }
     
@@ -94,15 +97,15 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @objc func nameEndEdit() {
         textFieldEndEdit()
-        print("name")
     }
     @objc func soundcheckEndEdit() {
         textFieldEndEdit()
         guard (soundcheckTime?.text?.isEmpty)! else {
             soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
-            event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(sender: (soundcheckTime!), timeTotalMin: (event?.soundcheckTimeTotalInMin)!)
+            let soundcheckTimeTotalSave = (event?.soundcheckTimeTotalInMin)!
+            event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(timeSave: soundcheckTimeSave, timeTotalMin: soundcheckTimeTotalSave)
             soundcheckEdit = true
-            print("soundcheck")
+            soundcheckTimeEveryFiveMinInTotal()
             return
             
         }
@@ -111,10 +114,12 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         textFieldEndEdit()
         guard (rigUpTime!.text?.isEmpty)! else {
             rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+            let showTimeTotalSave = (event?.showTimeTotalInMin)!
+            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: rigUpTimeSave, timeTotalMin: showTimeTotalSave)
             rigUpEdit = true
+            showTimeEveryFiveMinInTotal()
             showTimeLeftUpdate()
-            print("Rigup")
+            print("rigUpTimeSave: \(rigUpTimeSave)")
             return
             
         }
@@ -124,10 +129,11 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         textFieldEndEdit()
         guard (showTime!.text?.isEmpty)! else {
             showTimeSave = Int((showTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: showTimeSave, timeTotalMin: (event?.showTimeTotalInMin)!)
             showTimeEdit = true
+            showTimeEveryFiveMinInTotal()
             showTimeLeftUpdate()
-            print("showtime")
+            print("showTimeSave: \(showTimeSave)")
             return
             
         }
@@ -137,16 +143,16 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         textFieldEndEdit()
         guard (rigDownTime!.text?.isEmpty)! else {
             rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
-            event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
+            event!.showTimeTotalInMin = removeMinFromTotalTime(timeSave: rigDownTimeSave, timeTotalMin: (event?.showTimeTotalInMin)!)
             rigDownEdit = true
+            showTimeEveryFiveMinInTotal()
             showTimeLeftUpdate()
-            print("rigDown")
+            print("rigDownTimeSave: \(rigDownTimeSave)")
             return
         }
     }
     @objc func lineUpPlacementEndEdit() {
         textFieldEndEdit()
-        print("lineup")
     }
     
     func textFieldEndEdit() {
@@ -160,7 +166,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     func showTimeLeftUpdate() {
-        print(event!.showTimeTotalInMin)
         showtimeLeft.text = "Showtime left: \(event!.showTimeTotalInMin) min"
     }
     
@@ -169,14 +174,16 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func editMode() {
-        print("Editmode!!!")
+        editResetTextFields()
         makeSaveButton()
     }
     
     //  IBActions
     @IBAction func tapPressed(_ sender: UITapGestureRecognizer) {
-        view.endEditing(true)
-        performersTableView.deselectRow(at: cellIndexPath!, animated: true)
+        if anyUiTextFieldTapped {
+            view.endEditing(true)
+            performersTableView.deselectRow(at: cellIndexPath!, animated: true)
+        }
     }
     
     //  Segue
@@ -196,8 +203,8 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         event?.performers.append(Performence(performenceName: (name?.text!)!, soundcheckTime: (soundcheckTime?.text!)!, rigUpTime: (rigUpTime?.text!)!, showTime: (showTime?.text!)!, rigDownTime: (rigDownTime?.text!)!, lineUpPlacement: (lineUpPlacement?.text!)!, howManyPerformers: (event?.howManyPerformers)!))
     }
     
-    func removeMinFromTotalTime(sender: UITextField, timeTotalMin: Int) -> Int{
-        return timeTotalMin - Int((sender.text!).dropLast(4))!
+    func removeMinFromTotalTime(timeSave: Int, timeTotalMin: Int) -> Int{
+        return timeTotalMin - timeSave
     }
     
     func removeSelectedLineUpPlacementFromArray() {
@@ -219,72 +226,73 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         setTagToName()
         switch indexPath.row {
         case 0:             //performence Name tag = 200
+            anyUiTextFieldTapped = true
             textFieldEdit(name!)
         case 1:             //Soundcheck Time tag = 201
-            if soundcheckEdit == true {
+            anyUiTextFieldTapped = true
+            
+            if isEditMode {
+                soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
+            }
+            if soundcheckEdit || isEditMode {
                 event?.soundcheckTimeTotalInMin += soundcheckTimeSave
+                soundcheckTimeEveryFiveMinInTotal()
             }
-//            soundcheckEdit = false
             textFieldEdit(soundcheckTime!)
+//            soundcheckEdit = false
+            
         case 2:             //Rig Up Time tag = 202
-            if rigUpEdit == true {
+            anyUiTextFieldTapped = true
+            
+            print("rigUpTimeSave select: \(rigUpTimeSave)")
+            if isEditMode {
+                rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
+            }
+            if rigUpEdit || isEditMode  {
+                print("körsdenna1?")
                 event?.showTimeTotalInMin += rigUpTimeSave
+                showTimeEveryFiveMinInTotal()
             }
-                textFieldEdit(rigUpTime!)
+            textFieldEdit(rigUpTime!)
+//            rigUpEdit = false
+            
         case 3:             //Show Time tag = 203
-            if showTimeEdit == true {
+            anyUiTextFieldTapped = true
+            
+            print("showTimeSave select: \(showTimeSave)")
+            if isEditMode {
+                showTimeSave = Int((showTime!.text!).dropLast(4))!
+            }
+            if showTimeEdit || isEditMode  {
+                print("körsdenna2?")
                 event?.showTimeTotalInMin += showTimeSave
+                showTimeEveryFiveMinInTotal()
             }
-//            showTimeEdit = false
             textFieldEdit(showTime!)
+//            showTimeEdit = false
+            
         case 4:             //Rig Down Time tag = 204
-            if rigDownEdit == true {
-                event?.showTimeTotalInMin += rigDownTimeSave
+            anyUiTextFieldTapped = true
+            
+            print("rigDownTimeSave select: \(rigDownTimeSave)")
+            if isEditMode {
+                rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
             }
-//            rigDownEdit = false
+            if rigDownEdit || isEditMode  {
+                print("körsdenna3?")
+                event?.showTimeTotalInMin += rigDownTimeSave
+                showTimeEveryFiveMinInTotal()
+            }
             textFieldEdit(rigDownTime!)
+//            rigDownEdit = false
+            
         case 5:             //Line Up Placement tag = 205
+            anyUiTextFieldTapped = true
             textFieldEdit(lineUpPlacement!)
         default:
             print("Default")
         }
     }
-    
-//    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-//        setTagToName()
-//        switch indexPath.row {
-//        case 1:             //Soundcheck Time tag = 201
-//            guard (soundcheckTime?.text?.isEmpty)! else {
-//                soundcheckTimeSave = Int((soundcheckTime!.text!).dropLast(4))!
-//                event!.soundcheckTimeTotalInMin = removeMinFromTotalTime(sender: (soundcheckTime!), timeTotalMin: (event?.soundcheckTimeTotalInMin)!)
-//                soundcheckEdit = true
-//                return
-//            }
-//        case 2:             //Rig Up Time tag = 202
-//            guard (rigUpTime!.text?.isEmpty)! else {
-//                rigUpTimeSave = Int((rigUpTime!.text!).dropLast(4))!
-//                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigUpTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
-//                rigUpEdit = true
-//                return
-//            }
-//        case 3:             //Show Time tag = 203
-//            guard (showTime!.text?.isEmpty)! else {
-//                showTimeSave = Int((showTime!.text!).dropLast(4))!
-//                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (showTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
-//                showTimeEdit = true
-//                return
-//            }
-//        case 4:             //Rig Down Time tag = 204
-//            guard (rigDownTime!.text?.isEmpty)! else {
-//                rigDownTimeSave = Int((rigDownTime!.text!).dropLast(4))!
-//                event!.showTimeTotalInMin = removeMinFromTotalTime(sender: (rigDownTime!), timeTotalMin: (event?.showTimeTotalInMin)!)
-//                rigDownEdit = true
-//                return
-//            }
-//        default:
-//            print("Default")
-//        }
-//    }
     
     func textFieldEdit (_ sender: UITextField) {
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
@@ -294,7 +302,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         } else if sender.tag == 201 {
             soundcheckTimeEveryFiveMinInTotal()
             soundcheckTimerPickerLoad(sender)
-        } else if sender.tag >= 202 && sender.tag <= 204{
+        } else if sender.tag == 202 || sender.tag == 203 || sender.tag == 204{
             showTimeEveryFiveMinInTotal()
             countDownTimerPickerLoad(sender)
         } else if sender.tag == 205 {
@@ -340,12 +348,12 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         soundcheckTimer.delegate = self
         soundcheckTimer.dataSource = self
         if (sender.text?.isEmpty)! {
-            soundcheckTimer.selectRow(11, inComponent: 0, animated: true) // väljer vart man vill börja i soundcheckTimer
+            soundcheckTimer.selectRow(11, inComponent: 0, animated: true)
             pickerView(soundcheckTimer, didSelectRow: 11, inComponent: 0)
         } else {
             var checkWherePickerWheelsStarts = Int((sender.text!).dropLast(4))!
             checkWherePickerWheelsStarts = (checkWherePickerWheelsStarts / 5)-1
-            soundcheckTimer.selectRow(checkWherePickerWheelsStarts, inComponent: 0, animated: true) // väljer vart man vill börja i countDownTimer
+            soundcheckTimer.selectRow(checkWherePickerWheelsStarts, inComponent: 0, animated: true)
             pickerView(soundcheckTimer, didSelectRow: checkWherePickerWheelsStarts, inComponent: 0)
         }
         soundcheckTimer.backgroundColor = .black
@@ -367,6 +375,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Building Up Time array
     func showTimeEveryFiveMinInTotal() {
+        showTimeLeftUpdate()
         if event!.showTimeTotalInMin >= 5 {
             let everyFiveMinInTotalShowTime = (event?.showTimeTotalInMin)! / 5
             appendTimeInPickerData(runs: everyFiveMinInTotalShowTime, array: &showTimePickerData)
@@ -405,6 +414,16 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         rigDownTime?.text = nil
         lineUpPlacement?.text = nil
     }
+    func editResetTextFields() {
+        soundcheckEdit = false
+        soundcheckTimeSave = 0
+        rigUpEdit = false
+        rigUpTimeSave = 0
+        showTimeEdit = false
+        showTimeSave = 0
+        rigDownEdit = false
+        rigDownTimeSave = 0
+    }
     
     //  Methods --> Nav Buttons becomes visble
     func shouldAddButtonDisplay (anyInputFieldIsEmpty: Bool) {
@@ -427,7 +446,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func addButtonFunc() {
-        if showTimePickerData.count > 11 {
+        if showTimePickerData.count < 11 {
             lowInMinAlert()
         } else {
             addButtonAfterCheck()
@@ -497,7 +516,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
         }))
         alert.view.tintColor = UIColor.black
         self.present(alert, animated: true)
-        
     }
     
     //  Helpers --> Tableview
@@ -555,6 +573,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if pickerView.tag == 1 {
+            showTimeEveryFiveMinInTotal()
             return showTimePickerData.count
         } else if pickerView.tag == 2 {
             return soundcheckTimePickerData.count
@@ -567,6 +586,7 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
         if pickerView.tag == 1 {
+            showTimeEveryFiveMinInTotal()
             textField.text = showTimePickerData[row]
         } else if pickerView.tag == 2 {
             textField.text = soundcheckTimePickerData[row]
