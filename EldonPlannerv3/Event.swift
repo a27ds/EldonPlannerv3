@@ -10,7 +10,6 @@ import Foundation
 
 class Event {
     var performers = [Performence]()
-    var date: String
     var getIn: String
     var dinner: String
     var doors: String
@@ -20,8 +19,7 @@ class Event {
     var showTimeTotalInMin: Int
     var soundcheckTimeTotalInMin: Int
     
-    init(date: String, getIn: String, dinner: String, doors: String, musicCurfew: String, venueCurfew: String, howManyPerformers: Int) {
-        self.date = date
+    init(getIn: String, dinner: String, doors: String, musicCurfew: String, venueCurfew: String, howManyPerformers: Int) {
         self.getIn = getIn
         self.dinner = dinner
         self.doors = doors

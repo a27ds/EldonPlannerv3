@@ -125,6 +125,11 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
             actionSheet.addAction(actionSheetAction)
         }
         actionSheet.addAction(cancel)
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
         present(actionSheet, animated: true, completion: nil)
     }
     
@@ -253,6 +258,12 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
             self.performSegue(withIdentifier: "backToTheRoots", sender: nil)
         }))
         alert.view.tintColor = UIColor.black
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
         self.present(alert, animated: true)
     }
     
@@ -272,7 +283,7 @@ class EventViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     //  Tester
     func testRun() {
-        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
+        event = Event(getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
         event?.performers.append(Performence(performenceName: "Första", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "1", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "Andra", soundcheckTime: "30 min", rigUpTime: "15 min", showTime: "30 min", rigDownTime: "15 min", lineUpPlacement: "2", howManyPerformers: (event?.howManyPerformers)!))
         event?.performers.append(Performence(performenceName: "tredje", soundcheckTime: "30 min", rigUpTime: "3 min", showTime: "30 min", rigDownTime: "3 min", lineUpPlacement: "3", howManyPerformers: (event?.howManyPerformers)!))

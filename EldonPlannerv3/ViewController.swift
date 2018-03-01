@@ -16,14 +16,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet var tap: UITapGestureRecognizer!
     
     //  Variables
-    let eventInfoNames = ["Date", "How Many Performers", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew"]
+    let eventInfoNames = ["How Many Performers", "Get-in", "Dinner", "Doors", "Music Curfew", "Venue Curfew"]
     var whichTextFieldIsSelectedByItsTagNumber: Int = 0
     var counterClick = 1
     var timeForTimeWheel: String?
     
     var event: Event? = nil
     
-    var date: UITextField? = nil
     var getIn: UITextField? = nil
     var dinner: UITextField? = nil
     var doors: UITextField? = nil
@@ -33,7 +32,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     var cellIndexPath: IndexPath? = nil
     
-    var dateEdit: Bool = false
     var howManyPerformersEdit: Bool = false
     var getInEdit: Bool = false
     var doorsEdit: Bool = false
@@ -75,7 +73,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toAddPerformers" {
             let destVC = segue.destination as! PerformersViewController
-            destVC.event = Event(date: (date?.text!)!, getIn: (getIn?.text!)!, dinner: (dinner?.text!)!, doors: (doors?.text!)!, musicCurfew: (musicCurfew?.text!)!, venueCurfew: (venueCurfew?.text!)!, howManyPerformers: Int((howManyPerformers?.text!)!)!)
+            destVC.event = Event(getIn: (getIn?.text!)!, dinner: (dinner?.text!)!, doors: (doors?.text!)!, musicCurfew: (musicCurfew?.text!)!, venueCurfew: (venueCurfew?.text!)!, howManyPerformers: Int((howManyPerformers?.text!)!)!)
         }
     }
     
@@ -86,7 +84,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //  Methods --> Setting the observers to checks if any UITextfield did end it's editing, and then Display a done button in navbar
     func observerSet() {
-        NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: date)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: getIn)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: dinner)
         NotificationCenter.default.addObserver(self, selector: #selector(textFieldEndEdit), name: Notification.Name.UITextFieldTextDidEndEditing, object: doors)
@@ -125,29 +122,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         cellIndexPath = indexPath
         setTagToName()
         switch indexPath.row {
-        case 0:             //Date tag = 100
-            textFieldEdit(date!)
-            setColorOnLabels(2)
-        case 1:             //How many performers tag = 101
+        case 0:             //How many performers tag = 100
             textFieldEdit(howManyPerformers!)
-            setColorOnLabels(3)
-        case 2:             //Get-in tag = 102
+            setColorOnLabels(2)
+        case 1:             //Get-in tag = 101
             timeForTimeWheel = "15:00"
             textFieldEdit(getIn!)
-            setColorOnLabels(4)
-        case 3:             //Dinner tag = 103
+            setColorOnLabels(3)
+        case 2:             //Dinner tag = 102
             timeForTimeWheel = "18:00"
             textFieldEdit(dinner!)
-            setColorOnLabels(5)
-        case 4:             //Doors tag = 104
+            setColorOnLabels(4)
+        case 3:             //Doors tag = 103
             timeForTimeWheel = "19:00"
             textFieldEdit(doors!)
-            setColorOnLabels(6)
-        case 5:             //Music Curfew tag = 105
+            setColorOnLabels(5)
+        case 4:             //Music Curfew tag = 104
             timeForTimeWheel = "00:00"
             textFieldEdit(musicCurfew!)
-            setColorOnLabels(7)
-        case 6:             //Venue Curfew tag = 106
+            setColorOnLabels(6)
+        case 5:             //Venue Curfew tag = 105
             timeForTimeWheel = "03:00"
             textFieldEdit(venueCurfew!)
         default:
@@ -164,10 +158,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func textFieldEdit (_ sender: UITextField) {
         whichTextFieldIsSelectedByItsTagNumber = sender.tag
         if sender.tag == 100 {
-            datePickerEdit(sender)
-        } else if sender.tag == 101 {
             numPadEdit(sender)
-        } else if sender.tag >= 102 && sender.tag <= 106{
+        } else if sender.tag >= 101 && sender.tag <= 105{
             timePickerEdit(sender)
         }
     }
@@ -188,47 +180,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //  Methods --> Set a variable to a Tag
     func setTagToName() {
-        date = self.view.viewWithTag(100) as? UITextField
-        howManyPerformers = self.view.viewWithTag(101) as? UITextField
-        getIn = self.view.viewWithTag(102) as? UITextField
-        dinner = self.view.viewWithTag(103) as? UITextField
-        doors = self.view.viewWithTag(104) as? UITextField
-        musicCurfew = self.view.viewWithTag(105) as? UITextField
-        venueCurfew = self.view.viewWithTag(106) as? UITextField
+        howManyPerformers = self.view.viewWithTag(100) as? UITextField
+        getIn = self.view.viewWithTag(101) as? UITextField
+        dinner = self.view.viewWithTag(102) as? UITextField
+        doors = self.view.viewWithTag(103) as? UITextField
+        musicCurfew = self.view.viewWithTag(104) as? UITextField
+        venueCurfew = self.view.viewWithTag(105) as? UITextField
     }
     
     //  Methods --> Setting color to Pickers
     func setPickerColor(sender: UIDatePicker) {
         sender.backgroundColor = .black
         sender.setValue(UIColor.red, forKey:"textColor")
-    }
-    
-    //  Methods --> Construting DatePicker
-    func datePickerEdit(_ sender: UITextField) {
-        let datePicker = datePickerLoad()
-        setPickerColor(sender: datePicker)
-        sender.inputView = datePicker
-        sender.viewWithTag(whichTextFieldIsSelectedByItsTagNumber)?.becomeFirstResponder()
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged(sender:)), for: UIControlEvents.valueChanged)
-    }
-    
-    @objc func datePickerValueChanged(sender: UIDatePicker) {
-        let formatter = DateFormatter()
-        formatter.dateStyle = DateFormatter.Style.short
-        formatter.timeStyle = DateFormatter.Style.none
-        let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
-        textField.text = formatter.string(from: sender.date)
-    }
-    
-    func datePickerLoad() -> UIDatePicker{
-        let datePicker = UIDatePicker()
-        let formatter = DateFormatter()
-        formatter.dateStyle = DateFormatter.Style.short
-        formatter.timeStyle = DateFormatter.Style.none
-        datePicker.datePickerMode = UIDatePickerMode.date
-        let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
-        textField.text = formatter.string(from: datePicker.date)
-        return datePicker
     }
     
     //  Methods --> Construting TimePicker
@@ -244,6 +207,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let formatter = DateFormatter()
         formatter.dateStyle = DateFormatter.Style.none
         formatter.timeStyle = DateFormatter.Style.short
+        formatter.dateFormat = "HH:mm"
         let textField = self.view.viewWithTag(whichTextFieldIsSelectedByItsTagNumber) as! UITextField
         textField.text = formatter.string(from: sender.date)
     }
@@ -253,6 +217,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let formatter = DateFormatter()
         formatter.dateStyle = DateFormatter.Style.none
         formatter.timeStyle = DateFormatter.Style.short
+        formatter.dateFormat = "HH:mm"
         timePicker.datePickerMode = UIDatePickerMode.time
         timePicker.minuteInterval = 5
         timePicker.setDate(dateSet(testDate: timeForTimeWheel!), animated: true)
@@ -288,7 +253,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //  Methods --> Errorchecks
     func anyInputFieldIsEmpty () -> Bool {
-        if (date?.text?.isEmpty)! || (getIn?.text?.isEmpty)! || (dinner?.text?.isEmpty)! || (doors?.text?.isEmpty)! || (musicCurfew?.text?.isEmpty)! || (venueCurfew?.text?.isEmpty)! || (howManyPerformers?.text?.isEmpty)! {
+        if (getIn?.text?.isEmpty)! || (dinner?.text?.isEmpty)! || (doors?.text?.isEmpty)! || (musicCurfew?.text?.isEmpty)! || (venueCurfew?.text?.isEmpty)! || (howManyPerformers?.text?.isEmpty)! {
             return false
         }
         return true

@@ -594,6 +594,6 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Tester
     func testRun() {
-        event = Event(date: "", getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
+        event = Event(getIn: "15:00", dinner: "18:00", doors: "19:00", musicCurfew: "22:00", venueCurfew: "00:00", howManyPerformers: 3)
     }
 }
