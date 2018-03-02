@@ -171,11 +171,19 @@ class PerformersViewController: UIViewController, UITableViewDelegate, UITableVi
     
     //  Methods --> Tableview
     func performersTableViewSet() {
+        let screenSize: CGRect = UIScreen.main.bounds
+        let screenHeight = screenSize.height
+        
         performersTableView.delegate = self
         performersTableView.dataSource = self
         performersTableView.alwaysBounceVertical = false
         performersTableView.tableFooterView = UIView()
-        performersTableView.rowHeight = 44.0
+        
+        if screenHeight == 480.0 {
+            performersTableView.rowHeight = 31.0
+        } else {
+            performersTableView.rowHeight = 44.0
+        }
         performersTableView.backgroundView = UIView()
         performersTableView.backgroundView?.addGestureRecognizer(tap)
     }

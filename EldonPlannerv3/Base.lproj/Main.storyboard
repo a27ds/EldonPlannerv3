@@ -27,6 +27,11 @@
                                 <color key="sectionIndexColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="sectionIndexBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="sectionIndexTrackingBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="76e-rn-lq2">
+                                    <rect key="frame" x="0.0" y="72" width="414" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="eventCell" id="qzq-C3-g2w" customClass="EventTableViewCell" customModule="EldonPlannerv3" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="44"/>
@@ -117,7 +122,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="117.59999999999999" y="118.22660098522168"/>
+            <point key="canvasLocation" x="122" y="117"/>
         </scene>
         <!--Performers View Controller-->
         <scene sceneID="s2v-6o-AE6">
@@ -162,18 +167,18 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Fwn-rR-RwQ">
-                                                    <rect key="frame" x="352" y="0.0" width="8" height="43.666666666666664"/>
+                                                    <rect key="frame" x="391" y="0.0" width="8" height="43.666666666666664"/>
                                                     <color key="tintColor" red="0.97647720579999997" green="0.9764588475" blue="0.97647124529999996" alpha="0.0" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <color key="textColor" red="0.97647720579999997" green="0.9764588475" blue="0.97647124529999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                                 </textField>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6NS-OG-pSD">
-                                                    <rect key="frame" x="280" y="0.0" width="95" height="43.666666666666664"/>
+                                                    <rect key="frame" x="280" y="0.0" width="134" height="43.666666666666664"/>
                                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xap-ZL-KJ2">
-                                                    <rect key="frame" x="15" y="0.0" width="42" height="43.666666666666664"/>
+                                                    <rect key="frame" x="15" y="0.0" width="81" height="43.666666666666664"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.97647720579999997" green="0.9764588475" blue="0.97647124529999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <nil key="highlightedColor"/>

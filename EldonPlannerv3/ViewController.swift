@@ -99,11 +99,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //  Methods --> Tableview
     func eventTableViewSet() {
+        let screenSize: CGRect = UIScreen.main.bounds
+        let screenHeight = screenSize.height
+        
         eventTableView.delegate = self
         eventTableView.dataSource = self
         eventTableView.alwaysBounceVertical = false
         eventTableView.tableFooterView = UIView()
-        eventTableView.rowHeight = 44.0
+        
+        if screenHeight == 480.0 {
+           eventTableView.rowHeight = 33.0
+        } else {
+            eventTableView.rowHeight = 44.0
+        }
         eventTableView.backgroundView = UIView()
         eventTableView.backgroundView?.addGestureRecognizer(tap)
     }
